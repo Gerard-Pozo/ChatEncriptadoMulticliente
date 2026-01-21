@@ -42,6 +42,9 @@ public class ReceptorUDP implements Runnable {
 		}
 	}
 
+	/**
+	 * Escolta connexions UDP
+	 */
 	public static void udpEscoltant() {
 		byte[] buffer = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -83,6 +86,9 @@ public class ReceptorUDP implements Runnable {
 		}
 	}
 
+	/**
+	 * Treu de la llista de clients, tots aquells clients que s'hagin desconnectat de l'aplicació
+	 */
 	public void treureMorts() {
 		while (true) {
 			System.out.println("VIDA");

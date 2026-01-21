@@ -10,9 +10,22 @@ import java.security.PublicKey;
 import com.udp.encrypted.chat.security.DiffieHellman;
 
 public class Persona implements Serializable {
+
+	/**
+	 * Hash de la clau publica
+	 */
 	private String id;
+	/**
+	 * Nom de la persona
+	 */
 	private String nom;
+	/**
+	 * Clau publica
+	 */
 	private PublicKey publica;
+	/**
+	 * Clau privada
+	 */
 	private PrivateKey privada;
 
 	public Persona (String nom) {
@@ -28,6 +41,10 @@ public class Persona implements Serializable {
 		this.id = id;
 		this.nom = nom;
 		this.publica = publica;
+	}
+
+	public String getNom() {
+		return nom;
 	}
 	
 	public PrivateKey getPrivada() {

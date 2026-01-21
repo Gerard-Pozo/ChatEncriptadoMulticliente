@@ -18,10 +18,24 @@ public class Missatge implements Serializable {
 	public enum TipusMissatge {
 		DESCUBRIMENT, ENVIAMENT, VIU
 	}
-
+	/**
+	 * El tipus de missatge que serà
+	 */
 	private TipusMissatge tipus;
+	/**
+	 * El missatge que es passara per la xarxa
+	 */
 	private String missatgeEncriptat;
+	/**
+	 * La persona que envia el missatge
+	 */
 	private Persona emisor;
+	/**
+	 * Els destinataris als que anira el missatge
+	 * 
+	 * Key -> ID del destinatari
+	 * Value -> Clau AES encriptada
+	 */
 	private Map<String, String> destinataris = new HashMap<>();
 
 	public Missatge(TipusMissatge tipus, Persona emisor) {

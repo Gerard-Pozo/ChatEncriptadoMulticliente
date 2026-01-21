@@ -27,15 +27,21 @@ public class DescobrirEquipsUDP implements Runnable {
             socket = new DatagramSocket();
             socket.setBroadcast(true);
             new Thread(() -> cercarEquipsPeriodic()).start();
-        
+
             new Thread(() -> enviarMostraDeVida()).start();
         } catch (SocketException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Descobreix els equips en la xarxa en aquest moment
+     * 
+     * @throws Exception
+     */
     public static void enviarDescubriment() throws Exception {
-        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT, persona);
+        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT,
+                new Persona(persona.getId(), persona.getNom(), persona.getPublica()));
 
         // Serializar con ObjectOutputStream
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -58,6 +64,9 @@ public class DescobrirEquipsUDP implements Runnable {
         baos.close();
     }
 
+    /**
+     * Cerca els equips en la xarxa sense parar
+     */
     public static void cercarEquipsPeriodic() {
         while (true) {
             try {
@@ -74,6 +83,10 @@ public class DescobrirEquipsUDP implements Runnable {
         }
     }
 
+    /**
+     * Envia a la resta d'equips una notificació per informar que segueix en
+     * l'aplicació
+     */
     public static void enviarMostraDeVida() {
         while (true) {
             System.out.println("ESTOY VIVO");
