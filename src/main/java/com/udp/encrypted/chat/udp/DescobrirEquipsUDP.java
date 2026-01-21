@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 
 import com.udp.encrypted.chat.models.Missatge;
@@ -23,7 +24,7 @@ public class DescobrirEquipsUDP implements Runnable {
     @Override
     public void run() {
         try {
-            socket = new DatagramSocket();
+            socket = new DatagramSocket(new InetSocketAddress("0.0.0.0",0));
             socket.setBroadcast(true);
             cercarEquipsPeriodic();
         } catch (SocketException e) {
