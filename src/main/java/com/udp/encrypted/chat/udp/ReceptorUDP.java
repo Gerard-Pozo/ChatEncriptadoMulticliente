@@ -58,10 +58,8 @@ public class ReceptorUDP implements Runnable {
 							}
 						}
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
-						if (!Utils.clientExistent(persona)) {
-							LlistatPersones.afegirPersona(persona);
-						} else {
-							LlistatPersones.eliminarPersona(persona);
+						if (!Utils.clientExistent(missatge.getEmisor())) {
+							LlistatPersones.afegirPersona(missatge.getEmisor());
 						}
 					}
 					System.out.println("Personas registradas: " + LlistatPersones.getPersones());
