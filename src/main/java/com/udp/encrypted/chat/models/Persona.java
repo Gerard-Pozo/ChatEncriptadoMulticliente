@@ -58,4 +58,13 @@ public class Persona implements Serializable {
 		return null;
 		}
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		return "id: " + id
+				+ "\nnom: " + nom
+				+ "\nclau publica: " + publica;
+	}
 }

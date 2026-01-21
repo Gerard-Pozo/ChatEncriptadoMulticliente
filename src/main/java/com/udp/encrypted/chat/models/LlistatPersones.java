@@ -17,5 +17,15 @@ public class LlistatPersones {
 	public static ArrayList<Persona> getPersones() {
 		return (ArrayList) persones;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		for (Persona p : persones) {
+			sb.append(p);
+		}
+		return sb.toString();
+	}
 	
 }

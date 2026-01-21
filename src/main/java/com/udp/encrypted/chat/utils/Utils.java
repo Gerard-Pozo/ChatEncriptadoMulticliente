@@ -1,5 +1,8 @@
 package com.udp.encrypted.chat.utils;
 
+import com.udp.encrypted.chat.models.LlistatPersones;
+import com.udp.encrypted.chat.models.Persona;
+
 public class Utils {
 
 	// TODO Hay que añadir un control de buffer, para que los mensajes muy grandes
@@ -8,5 +11,15 @@ public class Utils {
 	// desencriptando hasta encontrar con un limite
 
 	public static final int PORT = 5000;
+
+	public static boolean clientExistent(Persona p) {
+		for (Persona persona : LlistatPersones.getPersones()) {
+			if (persona.getId().equals(p.getId())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 }

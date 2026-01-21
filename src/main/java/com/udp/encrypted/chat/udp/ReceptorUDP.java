@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import com.udp.encrypted.chat.models.LlistatPersones;
 import com.udp.encrypted.chat.models.Missatge;
 import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
@@ -41,9 +42,6 @@ public class ReceptorUDP implements Runnable {
 			try {
 				socket.receive(packet);
 
-				System.out.println("addr= " + packet.getAddress());
-				System.out.println("len= " + packet.getLength());
-
 				ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), 0, packet.getLength());
 
 				ObjectInputStream ois = new ObjectInputStream(bais);
@@ -60,10 +58,14 @@ public class ReceptorUDP implements Runnable {
 							}
 						}
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
-						System.out.println("Missatge rebut de: " + socket.getInetAddress());
+						if (!Utils.clientExistent(persona)) {
+							LlistatPersones.afegirPersona(persona);
+						} else {
+							LlistatPersones.eliminarPersona(persona);
+						}
 					}
 				}
-
+				System.out.println(LlistatPersones.getPersones());
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
