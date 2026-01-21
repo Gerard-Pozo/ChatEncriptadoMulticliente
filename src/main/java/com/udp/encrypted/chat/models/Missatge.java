@@ -19,8 +19,9 @@ public class Missatge implements Serializable {
 	private Persona emisor;
 	private Map<String, String> destinataris = new HashMap<>();
 
-	public Missatge(TipusMissatge tipus) {
+	public Missatge(TipusMissatge tipus, Persona emisor) {
 		this.tipus = tipus;
+		this.emisor = emisor;
 	}
 
 	public Missatge(TipusMissatge tipus, String missatgeEncriptat, Persona emisor) {
@@ -51,5 +52,9 @@ public class Missatge implements Serializable {
 
 	public TipusMissatge getTipus() {
 		return tipus;
+	}
+
+	public Persona getEmisor() {
+		return emisor;
 	}
 }

@@ -1,5 +1,6 @@
 package com.udp.encrypted.chat.models;
 
+import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,17 +9,17 @@ import java.security.PublicKey;
 
 import com.udp.encrypted.chat.security.DiffieHellman;
 
-public class Persona {
+public class Persona implements Serializable {
 	private String id;
 	private String nom;
-	private static PublicKey publica;
+	private PublicKey publica;
 	private PrivateKey privada;
 
 	public Persona (String nom) {
 		this.nom = nom;
 		// Es generen les claus publica i privada
 		KeyPair claus = DiffieHellman.generarClausDH();
-		Persona.publica = claus.getPublic();
+		this.publica = claus.getPublic();
 		this.privada = claus.getPrivate();
 		this.id = hash(publica.toString());
 	}
@@ -26,14 +27,14 @@ public class Persona {
 	public Persona(String id, String nom, PublicKey publica) {
 		this.id = id;
 		this.nom = nom;
-		Persona.publica = publica;
+		this.publica = publica;
 	}
 	
 	public PrivateKey getPrivada() {
 		return privada;
 	}
 	
-	public static PublicKey getPublica() {
+	public PublicKey getPublica() {
 		return publica;
 	}
 	

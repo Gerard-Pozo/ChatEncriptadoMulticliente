@@ -8,11 +8,17 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import com.udp.encrypted.chat.models.Missatge;
+import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.utils.Utils;
 
 public class DescobrirEquipsUDP implements Runnable {
 
     private static DatagramSocket socket;
+    private static Persona persona;
+
+    public DescobrirEquipsUDP(Persona persona) {
+        DescobrirEquipsUDP.persona = persona;
+    }
 
     @Override
     public void run() {
@@ -24,8 +30,8 @@ public class DescobrirEquipsUDP implements Runnable {
         }
     }
 
-    public static void enviarDescubrimiento() throws Exception {
-        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT);
+    public static void enviarDescubriment() throws Exception {
+        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT, persona);
 
         // Serializar con ObjectOutputStream
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -33,10 +39,14 @@ public class DescobrirEquipsUDP implements Runnable {
         oos.writeObject(missatge);
         oos.flush();
 
-        byte[] buffer = baos.toByteArray();
+        byte[] data = baos.toByteArray();
 
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("255.255.255.255"),
-                Utils.PORT);
+        DatagramPacket packet = new DatagramPacket(
+                data,
+                data.length,
+                InetAddress.getByName("255.255.255.255"),
+                5000);
+
         socket.send(packet);
         System.out.println("Missatge enviat");
 
@@ -48,7 +58,7 @@ public class DescobrirEquipsUDP implements Runnable {
         while (true) {
             try {
                 // Envia el missatge de descobriment
-                enviarDescubrimiento();
+                enviarDescubriment();
 
                 // Esperar 5 segons abans de tornar-ho a intentar
                 Thread.sleep(5000);

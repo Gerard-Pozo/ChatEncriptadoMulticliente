@@ -14,7 +14,13 @@ import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
 
 public class ReceptorUDP implements Runnable {
+	private static Persona persona;
+
 	private static DatagramSocket socket;
+
+	public ReceptorUDP(Persona persona) {
+		ReceptorUDP.persona = persona;
+	}
 
 	public void run() {
 		try {
@@ -26,31 +32,35 @@ public class ReceptorUDP implements Runnable {
 	}
 
 	public static void udpEscoltant() {
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-		System.out.println("UDP Escoltant");
+		System.out.println("Receptor UDP Escoltant");
 
 		while (true) {
 			try {
 				socket.receive(packet);
 
-				ByteArrayInputStream bytesObjecte = new ByteArrayInputStream(packet.getData(), 0, packet.getLength());
-				ObjectInputStream objecte = new ObjectInputStream(bytesObjecte);
+				ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), 0, packet.getLength());
 
-				Missatge missatge = (Missatge) objecte.readObject();
+				ObjectInputStream ois = new ObjectInputStream(bais);
 
-				if (missatge.getTipus() == TipusMissatge.ENVIAMENT) {
-					for (String id : missatge.getDestinataris().keySet()) {
-						if (id.equals(Persona.getPublica().toString())) {
-							System.out.println("Missatge desencriptat: " + DiffieHellman
-									.desencriptarAES(missatge.getMissatgeEncriptat(),
-											missatge.getDestinataris().get(id)));
+				Missatge missatge = (Missatge) ois.readObject();
+
+				if (!missatge.getEmisor().getPublica().equals(persona.getPublica())) {
+					if (missatge.getTipus() == TipusMissatge.ENVIAMENT) {
+						for (String id : missatge.getDestinataris().keySet()) {
+							if (id.equals(persona.getPublica().toString())) {
+								System.out.println("Missatge desencriptat: " + DiffieHellman
+										.desencriptarAES(missatge.getMissatgeEncriptat(),
+												missatge.getDestinataris().get(id)));
+							}
 						}
+					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
+						System.out.println("Missatge rebut");
 					}
-				} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
-					System.out.println("Missatge rebut");
 				}
+
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
