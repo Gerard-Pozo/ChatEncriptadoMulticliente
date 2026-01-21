@@ -64,7 +64,6 @@ public class Persona implements Serializable {
 		StringBuilder sb = new StringBuilder();
 
 		return "id: " + id
-				+ "\nnom: " + nom
-				+ "\nclau publica: " + publica;
+				+ "\nnom: " + nom;
 	}
 }
