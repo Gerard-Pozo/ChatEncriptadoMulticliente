@@ -75,8 +75,8 @@ public class ReceptorUDP implements Runnable {
 						String id = missatge.getEmisor().getId();
 						ultimesMostresDeVida.put(id, System.currentTimeMillis());
 					}
-					System.out.println("Personas registradas: " + LlistatPersones.getPersones());
 				}
+				System.out.println("Personas registradas: " + LlistatPersones.getPersones());
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
