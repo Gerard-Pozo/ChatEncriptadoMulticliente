@@ -36,6 +36,7 @@ public class ReceptorUDP implements Runnable {
 		try {
 			ReceptorUDP.socket = new DatagramSocket(Utils.PORT);
 			udpEscoltant();
+			treureMorts();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
