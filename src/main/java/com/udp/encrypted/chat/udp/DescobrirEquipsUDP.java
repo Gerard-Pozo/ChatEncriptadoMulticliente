@@ -24,6 +24,7 @@ public class DescobrirEquipsUDP implements Runnable {
     public void run() {
         try {
             socket = new DatagramSocket();
+            socket.setBroadcast(true);
             cercarEquipsPeriodic();
         } catch (SocketException e) {
             e.printStackTrace();

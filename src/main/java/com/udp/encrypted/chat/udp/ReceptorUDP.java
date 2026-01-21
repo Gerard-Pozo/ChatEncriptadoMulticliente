@@ -57,7 +57,7 @@ public class ReceptorUDP implements Runnable {
 							}
 						}
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
-						System.out.println("Missatge rebut");
+						System.out.println("Missatge rebut de: " + socket.getLocalAddress());
 					}
 				}
 
