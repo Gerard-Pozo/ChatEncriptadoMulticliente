@@ -6,6 +6,8 @@ import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.udp.encrypted.chat.models.LlistatPersones;
 import com.udp.encrypted.chat.models.Missatge;
@@ -18,6 +20,13 @@ public class ReceptorUDP implements Runnable {
 	private static Persona persona;
 
 	private static DatagramSocket socket;
+
+	/**
+	 * Mapa que registra els últims missatges de vida dels clients, és un
+	 * ConcurrentHashMap ja que aquesta classe impedeix que diversos fils entrin a
+	 * l'hora
+	 */
+	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
 
 	public ReceptorUDP(Persona persona) {
 		ReceptorUDP.persona = persona;
@@ -61,10 +70,30 @@ public class ReceptorUDP implements Runnable {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
 						}
+					} else if (missatge.getTipus() == TipusMissatge.VIU) {
+						String id = missatge.getEmisor().getId();
+						ultimesMostresDeVida.put(id, System.currentTimeMillis());
 					}
 					System.out.println("Personas registradas: " + LlistatPersones.getPersones());
 				}
 			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void treureMorts() {
+		while (true) {
+			long tempsActual = System.currentTimeMillis();
+			for (Map.Entry<String, Long> entrada : ultimesMostresDeVida.entrySet()) {
+				if (tempsActual - entrada.getValue() > 20000) {
+					System.out.println("Client desconectat: " + entrada.getKey());
+					ultimesMostresDeVida.remove(entrada.getKey());
+				}
+			}
+			try {
+				Thread.sleep(20000);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}

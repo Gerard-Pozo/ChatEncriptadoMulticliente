@@ -1,6 +1,7 @@
 package com.udp.encrypted.chat.udp;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,7 +10,7 @@ import java.net.SocketException;
 
 import com.udp.encrypted.chat.models.Missatge;
 import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.utils.Utils;
+import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
 
 public class DescobrirEquipsUDP implements Runnable {
 
@@ -26,6 +27,7 @@ public class DescobrirEquipsUDP implements Runnable {
             socket = new DatagramSocket();
             socket.setBroadcast(true);
             cercarEquipsPeriodic();
+            enviarMostraDeVida();
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -69,6 +71,36 @@ public class DescobrirEquipsUDP implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void enviarMostraDeVida() {
+        while (true) {
+            try {
+                Thread.sleep(15000); // 15 segons
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Missatge missatge = new Missatge(TipusMissatge.VIU, persona);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos;
+            try {
+                oos = new ObjectOutputStream(baos);
+                oos.writeObject(missatge);
+                oos.flush();
+
+                byte[] data = baos.toByteArray();
+
+                DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName("255.255.255.255"),
+                        5000);
+                socket.send(packet);
+                oos.close();
+                baos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

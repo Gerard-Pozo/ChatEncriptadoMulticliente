@@ -6,12 +6,17 @@ import java.util.Map;
 
 public class Missatge implements Serializable {
 	/**
-	 * Per diferenciar els tipus de missatges que pot escoltar el client,
-	 * descubriment implica els missatges per descobrir-lo en la xarxa, enviament
-	 * per enviar els missatges encriptats
+	 * <p>Per diferenciar els tipus de missatges que pot escoltar el client.</p>
+	 * 
+	 * <p>Descubriment implica els missatges per descobrir-lo en la xarxa</p>
+	 * 
+	 * <p>Enviament per enviar els missatges encriptats.</p>
+	 * 
+	 * <p>VIU és un missatge que cada x temps els clients enviarán per corroborar que
+	 * segueixen connectats</p>
 	 */
 	public enum TipusMissatge {
-		DESCUBRIMENT, ENVIAMENT
+		DESCUBRIMENT, ENVIAMENT, VIU
 	}
 
 	private TipusMissatge tipus;
