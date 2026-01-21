@@ -89,6 +89,7 @@ public class ReceptorUDP implements Runnable {
 				if (tempsActual - entrada.getValue() > 20000) {
 					System.out.println("Client desconectat: " + entrada.getKey());
 					ultimesMostresDeVida.remove(entrada.getKey());
+					LlistatPersones.eliminarPersona(entrada.getKey());
 				}
 			}
 			try {

@@ -9,6 +9,19 @@ public class LlistatPersones {
 	public static void afegirPersona(Persona persona) {
 		persones.add(persona);
 	}
+
+	/**
+	 * Elimina a un client per el seu id
+	 * 
+	 * @param id
+	 */
+	public static void eliminarPersona(String id) {
+		for (Persona p : persones) {
+			if (p.getId().equals(id)) {
+				persones.remove(p);
+			}
+		}
+	}
 	
 	public static void eliminarPersona(Persona persona) {
 			persones.remove(persona);
