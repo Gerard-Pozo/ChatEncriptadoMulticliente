@@ -13,12 +13,13 @@ import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
 
-public class ReceptorUDP {
+public class ReceptorUDP implements Runnable {
 	private static DatagramSocket socket;
 
-	public ReceptorUDP() {
+	public void run() {
 		try {
 			ReceptorUDP.socket = new DatagramSocket(Utils.PORT);
+			udpEscoltant();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -27,6 +28,8 @@ public class ReceptorUDP {
 	public static void udpEscoltant() {
 		byte[] buffer = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+		System.out.println("UDP Escoltant");
 
 		while (true) {
 			try {

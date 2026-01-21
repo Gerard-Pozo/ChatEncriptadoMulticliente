@@ -1,16 +1,13 @@
 package com.udp.encrypted.chat.udp;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 
 import com.udp.encrypted.chat.models.Missatge;
-import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.utils.Utils;
 
 public class DescobrirEquipsUDP implements Runnable {
@@ -48,21 +45,19 @@ public class DescobrirEquipsUDP implements Runnable {
     }
 
     public static void cercarEquipsPeriodic() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    // Envia el missatge de descobriment
-                    enviarDescubrimiento();
+        while (true) {
+            try {
+                // Envia el missatge de descobriment
+                enviarDescubrimiento();
 
-                    // Esperar 5 segons abans de tornar-ho a intentar
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    break;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                // Esperar 5 segons abans de tornar-ho a intentar
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }).start();
+        }
     }
 
 }
