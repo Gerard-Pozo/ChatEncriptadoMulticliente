@@ -1,0 +1,55 @@
+package com.udp.encrypted.chat.models;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Missatge implements Serializable {
+	/**
+	 * Per diferenciar els tipus de missatges que pot escoltar el client,
+	 * descubriment implica els missatges per descobrir-lo en la xarxa, enviament
+	 * per enviar els missatges encriptats
+	 */
+	public enum TipusMissatge {
+		DESCUBRIMENT, ENVIAMENT
+	}
+
+	private TipusMissatge tipus;
+	private String missatgeEncriptat;
+	private Persona emisor;
+	private Map<String, String> destinataris = new HashMap<>();
+
+	public Missatge(TipusMissatge tipus) {
+		this.tipus = tipus;
+	}
+
+	public Missatge(TipusMissatge tipus, String missatgeEncriptat, Persona emisor) {
+		this.tipus = tipus;
+		this.missatgeEncriptat = missatgeEncriptat;
+		this.emisor = emisor;
+	}
+
+	public Missatge(TipusMissatge tipus, String missatgeEncriptat, Persona emisor,
+			HashMap<String, String> destinataris) {
+		this.tipus = tipus;
+		this.missatgeEncriptat = missatgeEncriptat;
+		this.emisor = emisor;
+		this.destinataris = destinataris;
+	}
+
+	public void afegirDestinataris(String id, String clauAES) {
+		destinataris.put(id, clauAES);
+	}
+
+	public Map<String, String> getDestinataris() {
+		return destinataris;
+	}
+
+	public String getMissatgeEncriptat() {
+		return missatgeEncriptat;
+	}
+
+	public TipusMissatge getTipus() {
+		return tipus;
+	}
+}
