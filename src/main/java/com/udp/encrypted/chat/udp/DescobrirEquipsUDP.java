@@ -26,8 +26,9 @@ public class DescobrirEquipsUDP implements Runnable {
         try {
             socket = new DatagramSocket();
             socket.setBroadcast(true);
-            cercarEquipsPeriodic();
-            enviarMostraDeVida();
+            new Thread(() -> cercarEquipsPeriodic()).start();
+        
+            new Thread(() -> enviarMostraDeVida()).start();
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -75,11 +76,7 @@ public class DescobrirEquipsUDP implements Runnable {
 
     public static void enviarMostraDeVida() {
         while (true) {
-            try {
-                Thread.sleep(15000); // 15 segons
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            System.out.println("ESTOY VIVO");
             Missatge missatge = new Missatge(TipusMissatge.VIU, persona);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -97,6 +94,11 @@ public class DescobrirEquipsUDP implements Runnable {
                 oos.close();
                 baos.close();
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(15000); // 15 segons
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

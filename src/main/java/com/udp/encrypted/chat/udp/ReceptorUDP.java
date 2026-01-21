@@ -85,6 +85,7 @@ public class ReceptorUDP implements Runnable {
 
 	public void treureMorts() {
 		while (true) {
+			System.out.println("VIDA");
 			long tempsActual = System.currentTimeMillis();
 			for (Map.Entry<String, Long> entrada : ultimesMostresDeVida.entrySet()) {
 				if (tempsActual - entrada.getValue() > 20000) {
