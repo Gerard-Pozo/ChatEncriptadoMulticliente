@@ -7,7 +7,7 @@ import com.udp.encrypted.chat.udp.ReceptorUDP;
 
 public class Main {
     public static void main(String[] args) {
-        Persona persona = new Persona("Ivan");
+        Persona persona = new Persona("Geri");
 
         LlistatPersones.afegirPersona(persona);
         

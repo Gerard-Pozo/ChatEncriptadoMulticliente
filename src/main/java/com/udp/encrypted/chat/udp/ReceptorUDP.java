@@ -64,8 +64,8 @@ public class ReceptorUDP implements Runnable {
 							LlistatPersones.eliminarPersona(persona);
 						}
 					}
+					System.out.println("Personas registradas: " + LlistatPersones.getPersones());
 				}
-				System.out.println(LlistatPersones.getPersones());
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
