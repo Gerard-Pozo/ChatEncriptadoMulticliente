@@ -41,6 +41,9 @@ public class ReceptorUDP implements Runnable {
 			try {
 				socket.receive(packet);
 
+				System.out.println("addr= " + packet.getAddress());
+				System.out.println("len= " + packet.getLength());
+
 				ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData(), 0, packet.getLength());
 
 				ObjectInputStream ois = new ObjectInputStream(bais);
@@ -57,7 +60,7 @@ public class ReceptorUDP implements Runnable {
 							}
 						}
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
-						System.out.println("Missatge rebut de: " + socket.getLocalAddress());
+						System.out.println("Missatge rebut de: " + socket.getInetAddress());
 					}
 				}
 
