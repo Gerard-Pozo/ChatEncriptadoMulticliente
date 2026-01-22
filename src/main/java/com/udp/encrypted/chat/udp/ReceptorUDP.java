@@ -18,9 +18,24 @@ import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
 
+/**
+ * Classe per rebre els missatges enviats per altres clients.
+ * 
+ * Amb un fil es queda escoltant fins que arriba un missatge.
+ * 
+ * I amb un altre fil comproba que els clients segueixin connectats.
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class ReceptorUDP implements Runnable {
-	private static Persona persona;
 
+	/**
+	 * Client que està fent ús del programa
+	 */
+	private static Persona persona;
+	/**
+	 * Socket per rebre les consultes
+	 */
 	private static DatagramSocket socket;
 
 	/**
@@ -30,28 +45,43 @@ public class ReceptorUDP implements Runnable {
 	 */
 	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
 
+	/**
+	 * Constructor, demana el client que executa l'aplicació
+	 * 
+	 * @param persona Client
+	 */
 	public ReceptorUDP(Persona persona) {
 		ReceptorUDP.persona = persona;
 	}
 
+	/**
+	 * Quan s'inicia un fil prepara el socket amb el port especificat i inicia 2
+	 * fils nous.
+	 */
 	public void run() {
 		try {
-			ReceptorUDP.socket = new DatagramSocket(Utils.PORT);
+			socket = new DatagramSocket(Utils.PORT);
+
+			// Fil per escoltar connexions
 			new Thread(() -> udpEscoltant()).start();
+
+			// Fil per treure els clients desconnectats
 			new Thread(() -> treureMorts()).start();
+
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Escolta connexions UDP
+	 * Es queda escoltant fins que arriba un nou missatge.
+	 * 
+	 * Filtra els missatges segons el tipus.
 	 */
 	public static void udpEscoltant() {
 		byte[] buffer = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-		System.out.println("Receptor UDP Escoltant");
 
 		while (true) {
 			try {
@@ -63,11 +93,14 @@ public class ReceptorUDP implements Runnable {
 
 				Missatge missatge = (Missatge) ois.readObject();
 
+				// Impedeix que un missatge que ha enviar l'usuari sigui processat per ell
+				// mateix
 				if (!missatge.getEmisor().getPublica().equals(persona.getPublica())) {
+					// Si el missatge es normal
 					if (missatge.getTipus() == TipusMissatge.ENVIAMENT) {
 						for (String id : missatge.getDestinataris().keySet()) {
 							if (id.equals(persona.getId().toString())) {
-								// Primero es desencripta la clau AES de sessio
+								// Primer desencripta la clau de sessio
 								SecretKey clauAESSessio = DiffieHellman.desencriptarClauAES(
 										missatge.getDestinataris().get(id),
 										persona.getPrivada(),
@@ -80,10 +113,12 @@ public class ReceptorUDP implements Runnable {
 								System.out.println("Missatge desencriptat: " + missatgeDesencriptat);
 							}
 						}
+						// Si el missatge és per trobar nou clients
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
 						}
+						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
 						String id = missatge.getEmisor().getId();
 						ultimesMostresDeVida.put(id, System.currentTimeMillis());
@@ -101,11 +136,9 @@ public class ReceptorUDP implements Runnable {
 	 */
 	public void treureMorts() {
 		while (true) {
-			System.out.println("VIDA");
 			long tempsActual = System.currentTimeMillis();
 			for (Map.Entry<String, Long> entrada : ultimesMostresDeVida.entrySet()) {
 				if (tempsActual - entrada.getValue() > 20000) {
-					System.out.println("Client desconectat: " + entrada.getKey());
 					ultimesMostresDeVida.remove(entrada.getKey());
 					LlistatPersones.eliminarPersona(entrada.getKey());
 				}

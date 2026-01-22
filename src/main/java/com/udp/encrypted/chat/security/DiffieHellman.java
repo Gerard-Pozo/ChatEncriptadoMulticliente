@@ -8,16 +8,39 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyAgreement;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Classe que permet:
+ * 
+ * Generar un parell de claus publiques i privades amb el algoritme DH.
+ * Encriptar missatges.
+ * Desencriptar missatges.
+ * Generar claus de sessions per a una comunicació.
+ * 
+ * L'algoritme DH utilitza les mátematiques per a que totes les claus estiguin
+ * vinculades.
+ * 
+ * Per tal de fer una conexió segura, es té que encriptar el missatge amb la
+ * privada del emisor i la pública del receptor, i en el missatge es té que
+ * especificar la clau de sessió, que será una clau AES encriptada amb la
+ * privada del emisor.
+ * 
+ * En el moment en el que una sola clau privada surt a la llum, la comunicació
+ * ja es veu compromesa mentre s'executi el programa.
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class DiffieHellman {
 
+	/**
+	 * Genera un parell de claus privades i públiques
+	 * 
+	 * @return El parell de claus
+	 */
 	public static KeyPair generarClausDH() {
 		KeyPairGenerator kpg;
 		try {
@@ -31,7 +54,12 @@ public class DiffieHellman {
 	}
 
 	/**
-	 * Genera la clau compartida entre el emisor i el receptor
+	 * Genera una clau compartida per efectuar la connexió entre el emisor i el
+	 * receptor
+	 * 
+	 * @param clauPrivada Emisor
+	 * @param clauPublica Receptor
+	 * @return La clau compartida
 	 */
 	public static SecretKey generarClauCompartidaAES(PrivateKey clauPrivada, PublicKey clauPublica) {
 		KeyAgreement ka;
@@ -50,7 +78,11 @@ public class DiffieHellman {
 	}
 
 	/**
-	 * Retorna el missatge encriptat en base 64
+	 * Retorna el missatge encriptat
+	 * 
+	 * @param missatge Missatge sense encriptar
+	 * @param clauAES  Clau compartida
+	 * @return Missatge encriptat
 	 */
 	public static String encriptarMissatge(String missatge, SecretKey clauAES) {
 		try {
@@ -65,8 +97,11 @@ public class DiffieHellman {
 	}
 
 	/**
-	 * Desencripta el missatge utilitzant la clau aes generada
+	 * Desencripta un missatge encriptat
 	 * 
+	 * @param missatgeEncriptat Missatge encriptat
+	 * @param clauAES           Clau AES ja desencriptada
+	 * @return Missatge sense encriptar
 	 */
 	public static String desencriptarMissatge(String missatgeEncriptat, SecretKey clauAES) {
 		try {
@@ -80,6 +115,14 @@ public class DiffieHellman {
 		return null;
 	}
 
+	/**
+	 * Encripta la clau de sessio
+	 * 
+	 * @param clauEncriptada    Clau de sessio encriptada
+	 * @param clauPrivada       Clau privada del receptor
+	 * @param clauPublicaEmisor Clau publica del emisor
+	 * @return Clau de sessio desencriptada
+	 */
 	public static SecretKey desencriptarClauAES(String clauEncriptada, PrivateKey clauPrivada,
 			PublicKey clauPublicaEmisor) {
 		try {
@@ -96,17 +139,6 @@ public class DiffieHellman {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	/**
-	 * Converteix un String a SecretKey
-	 * 
-	 * @param encodedKey Clau xifrada String
-	 * @return Clau xifrada SecretKey
-	 */
-	public static SecretKey stringToSecretKey(String encodedKey) {
-		byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
-		return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
 	}
 
 }
