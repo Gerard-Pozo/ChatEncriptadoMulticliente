@@ -57,7 +57,6 @@ public class DescobrirEquipsUDP implements Runnable {
                 5000);
 
         socket.send(packet);
-        System.out.println("Missatge enviat");
 
         oos.close();
         baos.close();

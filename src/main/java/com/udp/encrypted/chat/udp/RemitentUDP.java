@@ -37,8 +37,11 @@ public class RemitentUDP {
 			RemitentUDP.socket = new DatagramSocket();
 			socket.setBroadcast(true);
 			this.persona = persona;
-			enviarMissatge(persona, "Hola que tal");
+			Thread.sleep(10000);
+			enviarMissatge(persona, "Hola ivan, soy geri");
 		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -47,6 +50,7 @@ public class RemitentUDP {
 		System.out.println("Preparando mensaje para enviar");
 		// Agafem el llistat de persones connectades
 		List<Persona> persones = LlistatPersones.getPersones();
+		System.out.println(persones);
 		// Treiem el remitent del llistat, ja que ell ja té el missatge desencriptat
 		persones.remove(remitent);
 
@@ -67,7 +71,7 @@ public class RemitentUDP {
 				// publica del destinatari
 				SecretKey clauDH = DiffieHellman.generarClauCompartidaAES(remitent.getPrivada(),
 						destinatari.getPublica());
-				// Xifra la clau de la sessio - USAMOS LA CLAVE DH DIRECTAMENTE
+				// Xifra la clau de la sessio
 				Cipher cipher;
 				try {
 					cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -100,12 +104,12 @@ public class RemitentUDP {
 
 			oos.close();
 			baos.close();
+
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }

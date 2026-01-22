@@ -80,6 +80,13 @@ public class ReceptorUDP implements Runnable {
 								System.out.println("Missatge desencriptat: " + missatgeDesencriptat);
 							}
 						}
+					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
+						if (!Utils.clientExistent(missatge.getEmisor())) {
+							LlistatPersones.afegirPersona(missatge.getEmisor());
+						}
+					} else if (missatge.getTipus() == TipusMissatge.VIU) {
+						String id = missatge.getEmisor().getId();
+						ultimesMostresDeVida.put(id, System.currentTimeMillis());
 					}
 				}
 			} catch (IOException | ClassNotFoundException e) {
