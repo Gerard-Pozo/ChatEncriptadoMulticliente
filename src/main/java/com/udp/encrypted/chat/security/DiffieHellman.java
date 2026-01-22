@@ -53,40 +53,46 @@ public class DiffieHellman {
 	 * Retorna el missatge encriptat en base 64
 	 */
 	public static String encriptarMissatge(String missatge, SecretKey clauAES) {
-		Cipher cipher;
 		try {
-			cipher = Cipher.getInstance("AES");
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			cipher.init(Cipher.ENCRYPT_MODE, clauAES);
-			byte[] encrypted = cipher.doFinal(missatge.getBytes());
+			byte[] encrypted = cipher.doFinal(missatge.getBytes("UTF-8"));
 			return Base64.getEncoder().encodeToString(encrypted);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public static String desencriptarAES(String missatgeEncriptat, String clau) {
-		Cipher cipher;
-		SecretKey clauAES = stringToSecretKey(clau);
+	/**
+	 * Desencripta el missatge utilitzant la clau aes generada
+	 * 
+	 */
+	public static String desencriptarMissatge(String missatgeEncriptat, SecretKey clauAES) {
 		try {
-			cipher = Cipher.getInstance("AES");
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			cipher.init(Cipher.DECRYPT_MODE, clauAES);
-			byte[] decoded = Base64.getDecoder().decode(missatgeEncriptat);
-			byte[] decrypted = cipher.doFinal(decoded);
-			return new String(decrypted);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(missatgeEncriptat));
+			return new String(decrypted, "UTF-8");
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
+		}
+		return null;
+	}
+
+	public static SecretKey desencriptarClauAES(String clauEncriptada, PrivateKey clauPrivada,
+			PublicKey clauPublicaEmisor) {
+		try {
+			// 1. Generar la clau DH compartida
+			SecretKey clauDH = generarClauCompartidaAES(clauPrivada, clauPublicaEmisor);
+
+			// 2. Desencriptar la clau AES de sessió
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			cipher.init(Cipher.DECRYPT_MODE, clauDH);
+			byte[] clauAESBytes = cipher.doFinal(Base64.getDecoder().decode(clauEncriptada));
+
+			return new SecretKeySpec(clauAESBytes, "AES");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

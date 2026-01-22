@@ -9,6 +9,8 @@ import java.net.SocketException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.crypto.SecretKey;
+
 import com.udp.encrypted.chat.models.LlistatPersones;
 import com.udp.encrypted.chat.models.Missatge;
 import com.udp.encrypted.chat.models.Persona;
@@ -64,22 +66,22 @@ public class ReceptorUDP implements Runnable {
 				if (!missatge.getEmisor().getPublica().equals(persona.getPublica())) {
 					if (missatge.getTipus() == TipusMissatge.ENVIAMENT) {
 						for (String id : missatge.getDestinataris().keySet()) {
-							if (id.equals(persona.getPublica().toString())) {
-								System.out.println("Missatge desencriptat: " + DiffieHellman
-										.desencriptarAES(missatge.getMissatgeEncriptat(),
-												missatge.getDestinataris().get(id)));
+							if (id.equals(persona.getId().toString())) {
+								// Primero es desencripta la clau AES de sessio
+								SecretKey clauAESSessio = DiffieHellman.desencriptarClauAES(
+										missatge.getDestinataris().get(id),
+										persona.getPrivada(),
+										missatge.getEmisor().getPublica());
+
+								// Després desencriptem el missatge amb la clau AES
+								String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(
+										missatge.getMissatgeEncriptat(),
+										clauAESSessio);
+								System.out.println("Missatge desencriptat: " + missatgeDesencriptat);
 							}
 						}
-					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
-						if (!Utils.clientExistent(missatge.getEmisor())) {
-							LlistatPersones.afegirPersona(missatge.getEmisor());
-						}
-					} else if (missatge.getTipus() == TipusMissatge.VIU) {
-						String id = missatge.getEmisor().getId();
-						ultimesMostresDeVida.put(id, System.currentTimeMillis());
 					}
 				}
-				System.out.println("Personas registradas: " + LlistatPersones.getPersones());
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -87,7 +89,8 @@ public class ReceptorUDP implements Runnable {
 	}
 
 	/**
-	 * Treu de la llista de clients, tots aquells clients que s'hagin desconnectat de l'aplicació
+	 * Treu de la llista de clients, tots aquells clients que s'hagin desconnectat
+	 * de l'aplicació
 	 */
 	public void treureMorts() {
 		while (true) {

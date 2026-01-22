@@ -7,11 +7,16 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import com.udp.encrypted.chat.models.LlistatPersones;
@@ -25,16 +30,21 @@ public class RemitentUDP {
 
 	private static DatagramSocket socket;
 
-	public RemitentUDP() {
+	private Persona persona;
+
+	public RemitentUDP(Persona persona) {
 		try {
 			RemitentUDP.socket = new DatagramSocket();
 			socket.setBroadcast(true);
+			this.persona = persona;
+			enviarMissatge(persona, "Hola que tal");
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void enviarMissatge(Persona remitent, String missatge) {
+		System.out.println("Preparando mensaje para enviar");
 		// Agafem el llistat de persones connectades
 		List<Persona> persones = LlistatPersones.getPersones();
 		// Treiem el remitent del llistat, ja que ell ja té el missatge desencriptat
@@ -44,7 +54,6 @@ public class RemitentUDP {
 		KeyGenerator keyGen;
 		try {
 			keyGen = KeyGenerator.getInstance("AES");
-
 			keyGen.init(128);
 			SecretKey clauSessio = keyGen.generateKey();
 
@@ -56,15 +65,25 @@ public class RemitentUDP {
 			for (Persona destinatari : persones) {
 				// Encripta la clau per desxifrar el missatge amb la privada del remitent i la
 				// publica del destinatari
-				@SuppressWarnings("static-access")
 				SecretKey clauDH = DiffieHellman.generarClauCompartidaAES(remitent.getPrivada(),
 						destinatari.getPublica());
-				// Xifra la clau de la sessio
-				String clauSessioXifrada = DiffieHellman
-						.encriptarMissatge(Base64.getEncoder().encodeToString(clauSessio.getEncoded()), clauDH);
-				// Afegeix la clau que tindrà que utilitzar el destinatari correspondent per
-				// desxifrar el missatge amb la seva privada
-				missatgeEncriptat.afegirDestinataris(destinatari.getId(), clauSessioXifrada);
+				// Xifra la clau de la sessio - USAMOS LA CLAVE DH DIRECTAMENTE
+				Cipher cipher;
+				try {
+					cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+					cipher.init(Cipher.ENCRYPT_MODE, clauDH);
+					byte[] clauSessioEncriptada = cipher.doFinal(clauSessio.getEncoded());
+					String clauSessioXifrada = Base64.getEncoder().encodeToString(clauSessioEncriptada);
+					missatgeEncriptat.afegirDestinataris(destinatari.getId(), clauSessioXifrada);
+				} catch (NoSuchPaddingException e) {
+					e.printStackTrace();
+				} catch (InvalidKeyException e) {
+					e.printStackTrace();
+				} catch (IllegalBlockSizeException e) {
+					e.printStackTrace();
+				} catch (BadPaddingException e) {
+					e.printStackTrace();
+				}
 			}
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -26,7 +26,7 @@ public class Persona implements Serializable {
 	/**
 	 * Clau privada
 	 */
-	private PrivateKey privada;
+	private transient PrivateKey privada;
 
 	public Persona (String nom) {
 		this.nom = nom;
@@ -35,12 +35,6 @@ public class Persona implements Serializable {
 		this.publica = claus.getPublic();
 		this.privada = claus.getPrivate();
 		this.id = hash(publica.toString());
-	}
-	
-	public Persona(String id, String nom, PublicKey publica) {
-		this.id = id;
-		this.nom = nom;
-		this.publica = publica;
 	}
 
 	public String getNom() {

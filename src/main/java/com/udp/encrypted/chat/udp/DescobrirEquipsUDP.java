@@ -40,8 +40,7 @@ public class DescobrirEquipsUDP implements Runnable {
      * @throws Exception
      */
     public static void enviarDescubriment() throws Exception {
-        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT,
-                new Persona(persona.getId(), persona.getNom(), persona.getPublica()));
+        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT, persona);
 
         // Serializar con ObjectOutputStream
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
