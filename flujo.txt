@@ -1,0 +1,14 @@
+Voy ha hacer una pequeña de guía conceptual de como funciona esta fumada, 
+lo voy ha hacer para que mi yo de mañana entienda como funciona esto
+
+Cada cliente nada más ejecutar el programa se les asignará una clave pública y privada, 
+todas las claves que hayan en el programa están vinculadas mátematicamente, por el algoritmo de DH es así.
+
+Cuando un cliente mande un mensaje, este mensaje se encriptará con la clave privada del emisor y la pública del receptor, 
+pero esto no basta para desencriptar el mensaje, junto al mensaje irá una clave aes, que es una clave de sesión, 
+para cada mensaje la clave de sesión será diferente, teniendo la clave de sesión y la privada del 
+receptor se desencripta el mensaje, en el momento en el que una privada sale a la luz la comunicación ya estará comprometida 
+lo que dure el programa en ejecucción
+
+Aclaro un concepto que quizás no he desarrollado bien ahí arriba, las sesiones son entre 2 personas, si hay más de 2 personas 
+se crearán 2 sesiones, una para que sea A -> B y otro para A -> C y así hasta n

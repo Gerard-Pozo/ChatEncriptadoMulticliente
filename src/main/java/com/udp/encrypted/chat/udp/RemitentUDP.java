@@ -26,55 +26,67 @@ import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
 
+/**
+ * Aquesta classe permet enviar missatges xifrats per la xarxa
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class RemitentUDP {
 
+	/**
+	 * Socket per enviar les consultes
+	 */
 	private static DatagramSocket socket;
 
-	private Persona persona;
-
-	public RemitentUDP(Persona persona) {
+	/**
+	 * Constructor inicia el socket i l'habilita per utilitzar broadcast
+	 */
+	public RemitentUDP() {
 		try {
-			RemitentUDP.socket = new DatagramSocket();
+			socket = new DatagramSocket();
 			socket.setBroadcast(true);
-			this.persona = persona;
-			enviarMissatge(persona, "Hola que tal");
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void enviarMissatge(Persona remitent, String missatge) {
-		System.out.println("Preparando mensaje para enviar");
+	/**
+	 * Prepara un missatge i l'envia per la xarxa ja encriptat
+	 * 
+	 * @param remitent Client que envia el missatge
+	 * @param text     Missatge que es vol enviar sense encriptar
+	 */
+	public void enviarMissatge(Persona remitent, String text) {
 		// Agafem el llistat de persones connectades
 		List<Persona> persones = LlistatPersones.getPersones();
 		// Treiem el remitent del llistat, ja que ell ja té el missatge desencriptat
 		persones.remove(remitent);
 
-		// Es genera una clau AES que s'utilitzará per encriptar aquesta comunicació
-		KeyGenerator keyGen;
 		try {
-			keyGen = KeyGenerator.getInstance("AES");
+			// Es genera una clau AES que s'utilitzará per encriptar el text
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			keyGen.init(128);
 			SecretKey clauSessio = keyGen.generateKey();
 
 			// S'encripta el missatge amb la clau de la sessio
-			String textEncriptat = DiffieHellman.encriptarMissatge(missatge, clauSessio);
+			String textEncriptat = DiffieHellman.encriptarMissatge(text, clauSessio);
 
-			Missatge missatgeEncriptat = new Missatge(TipusMissatge.ENVIAMENT, textEncriptat, remitent);
+			Missatge missatge = new Missatge(TipusMissatge.ENVIAMENT, textEncriptat, remitent);
 
 			for (Persona destinatari : persones) {
 				// Encripta la clau per desxifrar el missatge amb la privada del remitent i la
 				// publica del destinatari
 				SecretKey clauDH = DiffieHellman.generarClauCompartidaAES(remitent.getPrivada(),
 						destinatari.getPublica());
-				// Xifra la clau de la sessio - USAMOS LA CLAVE DH DIRECTAMENTE
-				Cipher cipher;
 				try {
-					cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+					// Xifra la clau de la sessio
+					Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 					cipher.init(Cipher.ENCRYPT_MODE, clauDH);
+
+					// Encripta la clau de sessio amb la clau AES generada anteriorment
 					byte[] clauSessioEncriptada = cipher.doFinal(clauSessio.getEncoded());
 					String clauSessioXifrada = Base64.getEncoder().encodeToString(clauSessioEncriptada);
-					missatgeEncriptat.afegirDestinataris(destinatari.getId(), clauSessioXifrada);
+					missatge.afegirDestinataris(destinatari.getId(), clauSessioXifrada);
 				} catch (NoSuchPaddingException e) {
 					e.printStackTrace();
 				} catch (InvalidKeyException e) {
@@ -86,10 +98,10 @@ public class RemitentUDP {
 				}
 			}
 
+			// Prepara l'objecte per ser enviat
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
-
-			oos.writeObject(missatgeEncriptat);
+			oos.writeObject(missatge);
 			oos.flush();
 
 			// Envia el missatge per broadcast
@@ -100,12 +112,12 @@ public class RemitentUDP {
 
 			oos.close();
 			baos.close();
+
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }
