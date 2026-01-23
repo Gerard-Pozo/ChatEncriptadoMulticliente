@@ -1,105 +1,115 @@
 package com.udp.encrypted.chat.web;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.udp.encrypted.chat.models.LlistatPersones;
 import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.udp.ReceptorUDP;
 import com.udp.encrypted.chat.udp.RemitentUDP;
 import com.udp.encrypted.chat.udp.UtilsUDP;
 
-import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
+import jakarta.websocket.OnClose;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @ServerEndpoint("/chat")
 public class ChatEndpoint {
 
     private Session session;
-
     private Persona persona;
-
     private RemitentUDP remitent = new RemitentUDP();
     private ReceptorUDP receptor;
-
-    // Set estático para rastrear todas las sesiones activas
-    private static final Set<Session> sessions = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    
+    // Mantener todas las sesiones activas
+    private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 
     @OnOpen
     public void onOpen(Session session) {
-        System.out.println("Nueva conexión WebSocket: " + session.getId());
         this.session = session;
         sessions.add(session);
+        System.out.println("WebSocket conectado: " + session.getId());
     }
 
     @OnClose
     public void onClose(Session session) {
-        System.out.println("Conexión cerrada: " + session.getId());
         sessions.remove(session);
+        System.out.println("WebSocket desconectado: " + session.getId());
     }
 
     @OnMessage
     public void handlerMessage(String message) {
+        System.out.println("Mensaje recibido via WebSocket: " + message);
+        
         if (esMissatge(message)) {
             if (persona != null) {
+                // Es un mensaje normal de chat
                 remitent.enviarMissatge(persona, message);
+                // Mostrar mensaje propio inmediatamente
+                enviarMensajeWebSocket(persona.getNom() + "_" + message);
             }
         } else {
+            // Es el nombre de usuario (NOMnombre)
             persona = new Persona(message.substring(3, message.length()));
-
+            System.out.println("Nuevo usuario: " + persona.getNom());
+            
             receptor = new ReceptorUDP(persona, this);
 
             Thread receptorFil = new Thread(receptor);
             Thread utils = new Thread(new UtilsUDP(persona));
-            
-            receptorFil.start();
+
             utils.start();
+            receptorFil.start();
+            
+            // Confirmar conexión al cliente
+            enviarMensajeWebSocket("SERVIDOR_Conectado como " + persona.getNom());
         }
     }
 
-    /**
-     * Envía un mensaje a todos los clientes WebSocket conectados
-     * @param message Mensaje a enviar
-     */
-    public void broadcast(String message) {
-        for (Session s : sessions) {
-            if (s.isOpen()) {
-                try {
-                    s.getBasicRemote().sendText(message);
-                } catch (IOException e) {
-                    System.err.println("Error enviando mensaje a " + s.getId() + ": " + e.getMessage());
+    public void imprimirMissatge(String remitent, String missatge) {
+        String mensajeCompleto = remitent + "_" + missatge;
+        enviarMensajeWebSocket(mensajeCompleto);
+        System.out.println("Mensaje a enviar via WebSocket: " + mensajeCompleto);
+    }
+
+    public void actualitzarLlistatClients() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("!#ActualitzarLlistat");
+        for (Persona p : LlistatPersones.getPersones()) {
+            sb.append("_").append(p.getNom());
+        }
+        enviarMensajeWebSocket(sb.toString());
+    }
+
+    private boolean esMissatge(String missatge) {
+        return !missatge.startsWith("NOM");
+    }
+    
+    private void enviarMensajeWebSocket(String mensaje) {
+        try {
+            if (session != null && session.isOpen()) {
+                session.getBasicRemote().sendText(mensaje);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Método estático para enviar mensajes a todas las sesiones
+    public static void broadcast(String mensaje) {
+        synchronized (sessions) {
+            for (Session s : sessions) {
+                if (s.isOpen()) {
+                    try {
+                        s.getBasicRemote().sendText(mensaje);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
-
-    public String imprimirMissatge(String remitent, String missatge) {
-        String formattedMessage = remitent + "_" + missatge;
-        // Enviar el mensaje a todos los clientes WebSocket
-        broadcast(formattedMessage);
-        return formattedMessage;
-    }
-
-    public String actualitzarLlistatClients() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("!#ActualitzarLlistat_");
-        for (Persona p : LlistatPersones.getPersones()) {
-            sb.append("_" + p.getNom());
-        }
-        String message = sb.toString();
-        // Enviar la lista actualizada a todos los clientes
-        broadcast(message);
-        return message;
-    }
-
-    private boolean esMissatge(String missatge) {
-        return missatge.contains("NOM");
-    }
-
 }
-
