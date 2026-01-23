@@ -30,34 +30,32 @@ document.addEventListener('DOMContentLoaded', function () {
         contenidor.appendChild(nouContenidor);
     }
 
-    // Corregir la función actualizar lista de usuarios
     function actualitzarLlistat(parts) {
         const contenidor = document.getElementById('usuaris-connectats');
-        contenidor.innerHTML = ''; // Limpiar lista primero
-
-        // Crear un elemento para cada usuario
-        parts.forEach(nomUsuari => {
-            const nouLi = document.createElement('li');
-            nouLi.textContent = nomUsuari;
-            nouLi.classList.add('usuari-item');
-            contenidor.appendChild(nouLi);
-        });
+        // Limpiar la lista actual
+        contenidor.innerHTML = '';
+        // Agregar cada usuario a la lista
+        for (const nom of parts) {
+            if (nom && nom.trim() !== '') {
+                const nouLi = document.createElement('li');
+                nouLi.textContent = nom;
+                contenidor.appendChild(nouLi);
+            }
+        }
     }
 
-    // Corregir el procesamiento de mensajes
+    // Missatges rebuts desde el servidor
     ws.onmessage = function (event) {
         if (!event.data) return;
 
-        console.log("Mensaje recibido:", event.data); // Para depuración
-
         if (event.data.includes("!#ActualitzarLlistat")) {
             const parts = event.data.split('_');
-            parts.shift(); // Quitar el marcador
+            parts.shift();
+
             actualitzarLlistat(parts);
-            return; // Salir para no procesar como mensaje normal
         }
 
-        // Separem el format en el que viene el missatge
+        // Separem el format en el que be el missatge
         const parts = event.data.split('_');
         if (parts.length >= 2) {
             const remitent = parts[0];
@@ -66,10 +64,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Permitir enviar con Enter
+    // Envia els missatges
+    document.getElementById('btn-enviar').addEventListener('click', () => {
+        const input = document.getElementById('missatge');
+        const missatge = input.value.trim();
+        if (missatge.length === 0) return;
+
+        // Envia el missatge al servidor
+        ws.send(missatge);
+
+        // Mostra el missatge al dom
+        afegirMissatge(nomUsuari, missatge);
+
+        // Neteja la barra de escriure
+        input.value = '';
+    });
+
+    // Estableix el nom del client
+    document.getElementById('btn-entrar').addEventListener('click', () => {
+        const input = document.getElementById('nom-usuari');
+        nomUsuari = input.value.trim();
+        if (nomUsuari.length === 0) return;
+
+        document.getElementById('username-modal').remove();
+        // Informa al servidor del nom del client
+        ws.send("NOM" + nomUsuari);
+    });
+
+    // Permet enviar missatges amb el enter
     document.getElementById('missatge').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             document.getElementById('btn-enviar').click();
         }
     });
+    
 });

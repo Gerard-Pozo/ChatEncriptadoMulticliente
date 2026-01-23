@@ -32,9 +32,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualitzarLlistat(parts) {
         const contenidor = document.getElementById('usuaris-connectats');
-        const nouLi = document.createElement('li');
-
-        contenidor.appendChild(nouLi);
+        // Limpiar la lista actual
+        contenidor.innerHTML = '';
+        // Agregar cada usuario a la lista
+        for (const nom of parts) {
+            if (nom && nom.trim() !== '') {
+                const nouLi = document.createElement('li');
+                nouLi.textContent = nom;
+                contenidor.appendChild(nouLi);
+            }
+        }
     }
 
     // Missatges rebuts desde el servidor
@@ -43,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (event.data.includes("!#ActualitzarLlistat")) {
             const parts = event.data.split('_');
-            parts.shifth();
+            parts.shift();
 
             actualitzarLlistat(parts);
         }
@@ -84,10 +91,11 @@ document.addEventListener('DOMContentLoaded', function () {
         ws.send("NOM" + nomUsuari);
     });
 
-    // Permitir enviar con Enter
+    // Permet enviar missatges amb el enter
     document.getElementById('missatge').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             document.getElementById('btn-enviar').click();
         }
     });
+    
 });

@@ -99,7 +99,7 @@ public class ReceptorUDP implements Runnable {
 
 				// Impedeix que un missatge que ha enviar l'usuari sigui processat per ell
 				// mateix
-				if (!missatge.getEmisor().getPublica().equals(persona.getPublica())) {
+				//if (!missatge.getEmisor().getPublica().equals(persona.getPublica())) {
 					// Si el missatge es normal
 					if (missatge.getTipus() == TipusMissatge.ENVIAMENT) {
 						for (String id : missatge.getDestinataris().keySet()) {
@@ -128,7 +128,7 @@ public class ReceptorUDP implements Runnable {
 						String id = missatge.getEmisor().getId();
 						ultimesMostresDeVida.put(id, System.currentTimeMillis());
 					}
-				}
+				//}
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
