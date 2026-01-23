@@ -30,9 +30,23 @@ document.addEventListener('DOMContentLoaded', function () {
         contenidor.appendChild(nouContenidor);
     }
 
+    function actualitzarLlistat(parts) {
+        const contenidor = document.getElementById('usuaris-connectats');
+        const nouLi = document.createElement('li');
+
+        contenidor.appendChild(nouLi);
+    }
+
     // Missatges rebuts desde el servidor
     ws.onmessage = function (event) {
         if (!event.data) return;
+
+        if (event.data.includes("!#ActualitzarLlistat")) {
+            const parts = event.data.split('_');
+            parts.shifth();
+
+            actualitzarLlistat(parts);
+        }
 
         // Separem el format en el que be el missatge
         const parts = event.data.split('_');

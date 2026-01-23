@@ -1,5 +1,6 @@
 package com.udp.encrypted.chat.web;
 
+import com.udp.encrypted.chat.models.LlistatPersones;
 import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.udp.ReceptorUDP;
 import com.udp.encrypted.chat.udp.RemitentUDP;
@@ -46,6 +47,16 @@ public class ChatEndpoint {
 
     public String imprimirMissatge(String remitent, String missatge) {
         return remitent + "_" + missatge;
+    }
+
+    public String actualitzarLlistatClients() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("!#ActualitzarLlistat");
+        for (Persona p : LlistatPersones.getPersones()) {
+            sb.append("_" + p.getNom());
+        }
+
+        return sb.toString();
     }
 
     private boolean esMissatge(String missatge) {
