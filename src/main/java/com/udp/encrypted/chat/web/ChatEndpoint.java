@@ -1,6 +1,5 @@
 package com.udp.encrypted.chat.web;
 
-import com.udp.encrypted.chat.models.LlistatPersones;
 import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.udp.ReceptorUDP;
 import com.udp.encrypted.chat.udp.RemitentUDP;
@@ -31,13 +30,11 @@ public class ChatEndpoint {
     public void onOpen(Session session) {
         this.session = session;
         sessions.add(session);
-        System.out.println("WebSocket conectado: " + session.getId());
     }
 
     @OnClose
     public void onClose(Session session) {
         sessions.remove(session);
-        System.out.println("WebSocket desconectado: " + session.getId());
     }
 
     @OnMessage
@@ -68,27 +65,8 @@ public class ChatEndpoint {
             enviarMensajeWebSocket("SERVIDOR_Conectado como " + persona.getNom());
         }
     }
-
-    public void imprimirMissatge(String remitent, String missatge) {
-        String mensajeCompleto = remitent + "_" + missatge;
-        enviarMensajeWebSocket(mensajeCompleto);
-        System.out.println("Mensaje a enviar via WebSocket: " + mensajeCompleto);
-    }
-
-    public void actualitzarLlistatClients() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("!#ActualitzarLlistat");
-        for (Persona p : LlistatPersones.getPersones()) {
-            sb.append("_").append(p.getNom());
-        }
-        enviarMensajeWebSocket(sb.toString());
-    }
-
-    private boolean esMissatge(String missatge) {
-        return !missatge.startsWith("NOM");
-    }
     
-    private void enviarMensajeWebSocket(String mensaje) {
+    public void enviarMensajeWebSocket(String mensaje) {
         try {
             if (session != null && session.isOpen()) {
                 session.getBasicRemote().sendText(mensaje);
@@ -97,19 +75,9 @@ public class ChatEndpoint {
             e.printStackTrace();
         }
     }
-    
-    // Método estático para enviar mensajes a todas las sesiones
-    public static void broadcast(String mensaje) {
-        synchronized (sessions) {
-            for (Session s : sessions) {
-                if (s.isOpen()) {
-                    try {
-                        s.getBasicRemote().sendText(mensaje);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+
+    private boolean esMissatge(String missatge) {
+        return !missatge.startsWith("NOM");
     }
+    
 }
