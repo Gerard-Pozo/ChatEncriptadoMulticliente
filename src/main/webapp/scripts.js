@@ -30,34 +30,25 @@ document.addEventListener('DOMContentLoaded', function () {
         contenidor.appendChild(nouContenidor);
     }
 
-    // Corregir la función actualizar lista de usuarios
     function actualitzarLlistat(parts) {
         const contenidor = document.getElementById('usuaris-connectats');
-        contenidor.innerHTML = ''; // Limpiar lista primero
+        const nouLi = document.createElement('li');
 
-        // Crear un elemento para cada usuario
-        parts.forEach(nomUsuari => {
-            const nouLi = document.createElement('li');
-            nouLi.textContent = nomUsuari;
-            nouLi.classList.add('usuari-item');
-            contenidor.appendChild(nouLi);
-        });
+        contenidor.appendChild(nouLi);
     }
 
-    // Corregir el procesamiento de mensajes
+    // Missatges rebuts desde el servidor
     ws.onmessage = function (event) {
         if (!event.data) return;
 
-        console.log("Mensaje recibido:", event.data); // Para depuración
-
         if (event.data.includes("!#ActualitzarLlistat")) {
             const parts = event.data.split('_');
-            parts.shift(); // Quitar el marcador
+            parts.shifth();
+
             actualitzarLlistat(parts);
-            return; // Salir para no procesar como mensaje normal
         }
 
-        // Separem el format en el que viene el missatge
+        // Separem el format en el que be el missatge
         const parts = event.data.split('_');
         if (parts.length >= 2) {
             const remitent = parts[0];
