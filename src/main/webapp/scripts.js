@@ -66,6 +66,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Envia els missatges
+    document.getElementById('btn-enviar').addEventListener('click', () => {
+        const input = document.getElementById('missatge');
+        const missatge = input.value.trim();
+        if (missatge.length === 0) return;
+
+        // Envia el missatge al servidor
+        ws.send(missatge);
+
+        // Mostra el missatge al dom
+        afegirMissatge(nomUsuari, missatge);
+
+        // Neteja la barra de escriure
+        input.value = '';
+    });
+
+    // Estableix el nom del client
+    document.getElementById('btn-entrar').addEventListener('click', () => {
+        const input = document.getElementById('nom-usuari');
+        nomUsuari = input.value.trim();
+        if (nomUsuari.length === 0) return;
+
+        document.getElementById('username-modal').remove();
+        // Informa al servidor del nom del client
+        ws.send("NOM" + nomUsuari);
+    });
+
     // Permitir enviar con Enter
     document.getElementById('missatge').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
