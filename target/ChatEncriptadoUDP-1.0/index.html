@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="scripts.js"></script>
+</head>
+
+<body>
+
+    <div class="chat-container">
+
+        <!-- Zona de missatges -->
+        <div id="chat-general" class="missatges-chat"></div>
+
+        <!-- Barra inferior -->
+        <div class="chat-input">
+            <input type="text" id="missatge" placeholder="Escribe un mensaje...">
+            <button id="btn-enviar">Enviar</button>
+        </div>
+
+        <!-- Modal de usuario -->
+        <div id="username-modal" class="modal">
+            <div class="modal-content">
+                <h2>Bienvenido al Chat</h2>
+                <p>Por favor, ingresa tu nombre de usuario:</p>
+                <input type="text" id="nom-usuari" placeholder="Tu nombre">
+                <button id="btn-entrar">Entrar</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

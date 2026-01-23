@@ -17,6 +17,7 @@ import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
+import com.udp.encrypted.chat.web.ChatEndpoint;
 
 /**
  * Classe per rebre els missatges enviats per altres clients.
@@ -45,13 +46,16 @@ public class ReceptorUDP implements Runnable {
 	 */
 	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
 
+	private static ChatEndpoint endpoint;
+
 	/**
 	 * Constructor, demana el client que executa l'aplicació
 	 * 
 	 * @param persona Client
 	 */
-	public ReceptorUDP(Persona persona) {
+	public ReceptorUDP(Persona persona, ChatEndpoint endpoint) {
 		ReceptorUDP.persona = persona;
+		ReceptorUDP.endpoint = endpoint;
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class ReceptorUDP implements Runnable {
 	 * 
 	 * Filtra els missatges segons el tipus.
 	 */
-	public static void udpEscoltant() {
+	public void udpEscoltant() {
 		byte[] buffer = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
@@ -110,7 +114,7 @@ public class ReceptorUDP implements Runnable {
 								String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
-								System.out.println("Missatge desencriptat: " + missatgeDesencriptat);
+								endpoint.imprimirMissatge(missatge.getEmisor().getNom(), missatgeDesencriptat);
 							}
 						}
 						// Si el missatge és per trobar nou clients
