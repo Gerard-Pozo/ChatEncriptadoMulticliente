@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ws.onmessage = function (event) {
         if (!event.data) return;
 
-        if (event.data.includes("!#ActualitzarLlistat")) {
+        if (event.data.includes("!#ActualitzarLlistat_")) {
             const parts = event.data.split('_');
             parts.shift();
 

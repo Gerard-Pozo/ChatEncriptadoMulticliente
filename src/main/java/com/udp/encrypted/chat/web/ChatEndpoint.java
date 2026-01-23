@@ -87,7 +87,7 @@ public class ChatEndpoint {
 
     public String actualitzarLlistatClients() {
         StringBuilder sb = new StringBuilder();
-        sb.append("!#ActualitzarLlistat");
+        sb.append("!#ActualitzarLlistat_");
         for (Persona p : LlistatPersones.getPersones()) {
             sb.append("_" + p.getNom());
         }
