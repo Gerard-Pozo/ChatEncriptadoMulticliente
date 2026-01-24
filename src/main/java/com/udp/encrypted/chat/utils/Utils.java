@@ -20,6 +20,13 @@ public class Utils {
 	 * El temps que pasa entre un missatge de mostra de vida i un altra
 	 */
 	public static final int TEMPS_ENTRE_MOSTRE_VIDA = 5000;
+	/**
+	 * Missatge que utilitza el sistema per sapiguer que un missatge vol indicar un
+	 * nom d'usuari
+	 * 
+	 * Si es cambia la variable també es té que cambiar del js
+	 */
+	public static final String WEB_MISSATGE_SISTEMA_NOM = "$%&MSG_SYSTEM_NOM&%$";
 
 	/**
 	 * Diu si un client especificat existeix en la llista

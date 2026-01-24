@@ -114,7 +114,7 @@ public class ReceptorUDP implements Runnable {
 								String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
-								endpoint.enviarMensajeWebSocket(missatge.getEmisor().getNom() + "_" + missatgeDesencriptat);
+								endpoint.enviarMissatgeWebSocket(missatge.getEmisor().getNom() + "_" + missatgeDesencriptat);
 							}
 						}
 						// Si el missatge és per trobar nou clients
