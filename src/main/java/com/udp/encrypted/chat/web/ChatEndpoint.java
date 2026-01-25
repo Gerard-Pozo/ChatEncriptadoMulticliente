@@ -48,7 +48,7 @@ public class ChatEndpoint {
     private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 
     /**
-     * Quan s'obre el websocket emmagatzema la sessio a una llista
+     * Quan s'obre el websocket emmagatzema la sessio en un llista
      * 
      * @param sessio Conexió entre la UI i el programa
      */

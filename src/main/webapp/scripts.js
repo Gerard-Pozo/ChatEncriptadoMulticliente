@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const wsUrl = `${protocol}//${host}/ChatEncriptadoUDP/chat`;
     const ws = new WebSocket(wsUrl);
 
+    const missatgeNouClient = "$%&MSG_SYSTEM_NOU_CLIENT&%$";
+    const missatgeClientDesconectat = "$%&MSG_SYSTEM_CLIENT_DESCONECTAT&%$";
+
     let nomUsuari;
     let estaConectat = false;
 
@@ -28,9 +31,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log("JS: Mensaje recibido ", event.data);
 
-        if (event.data.includes("$%&MSG_SYSTEM_NOU_CLIENT&%$")) {
-            console.log("JS: Nuevo cliente: ", event.data.substring(28, event.data.length));
-            afegirMissatge("NOU_CLIENT", event.data.substring(28, event.data.length));
+        if (event.data.includes(missatgeNouClient)) {
+            console.log("JS: Nuevo cliente: ", event.data.substring(missatgeNouClient.length + 1, event.data.length));
+            afegirMissatge("NOU_CLIENT", event.data.substring(missatgeNouClient.length + 1, event.data.length));
+            return;
+        }
+
+        if (event.data.includes(missatgeClientDesconectat)) {
+            afegirMissatge("CLIENT_DESCONECTAT", event.data.substring(missatgeClientDesconectat.length + 1, event.data.length));
+            console.log("Cliente desconectado")
             return;
         }
 
@@ -59,20 +68,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const nouSpan = document.createElement('span');
             const nouSpan2 = document.createElement('span');
 
+            const parts = missatge.split('_');
+
             nouLabel.classList.add('user-item');
+            nouLabel.id = parts[1];
             nouInput.setAttribute('type', 'checkbox');
             nouSpan.classList.add('avatar', 'online');
             nouSpan.textContent = missatge.charAt(0);
-
-            const parts = missatge.split('_');
             nouSpan2.textContent = parts[0];
-            nouSpan2.id = parts[1];
 
             nouLabel.appendChild(nouInput);
             nouLabel.appendChild(nouSpan);
             nouLabel.appendChild(nouSpan2);
             contenidorClients.appendChild(nouLabel);
             return;
+        } else if (remitent === 'CLIENT_DESCONECTAT') {
+            document.getElementById(missatge).remove();
         } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
             nouContenidor.innerHTML = `<em>${missatge}</em>`;

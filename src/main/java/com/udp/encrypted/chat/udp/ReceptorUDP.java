@@ -44,7 +44,7 @@ public class ReceptorUDP implements Runnable {
 	 * ConcurrentHashMap ja que aquesta classe impedeix que diversos fils entrin a
 	 * l'hora
 	 * 
-	 * key -> Public key
+	 * key -> Id
 	 * value -> Data última mostra de vida
 	 */
 	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
@@ -125,7 +125,8 @@ public class ReceptorUDP implements Runnable {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
 							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_"
-									+ missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getPublica());
+									+ missatge.getEmisor().getNom() + "_"
+									+ Utils.toHash(missatge.getEmisor().getPublica().toString()));
 							System.out.println("Nuevo client: " + missatge.getEmisor().getNom());
 						}
 						// Si el missatge és per trobar a clients connectats
@@ -150,8 +151,10 @@ public class ReceptorUDP implements Runnable {
 			for (Map.Entry<String, Long> entrada : ultimesMostresDeVida.entrySet()) {
 				if (tempsActual - entrada.getValue() > 20000) {
 					ultimesMostresDeVida.remove(entrada.getKey());
-					LlistatPersones.eliminarPersona(entrada.getKey());
-					endpoint.enviarMissatgeWebSocket(Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_" + Utils.toHash(entrada.getKey()));
+					LlistatPersones.eliminarPersona(entrada.getKey().toString());
+					endpoint.enviarMissatgeWebSocket(
+							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_" + entrada.getKey());
+							System.out.println("Se va a quitar el cliente " + entrada.getKey());
 				}
 			}
 			try {
