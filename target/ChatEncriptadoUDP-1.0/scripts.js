@@ -48,14 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const nouContenidor = document.createElement('div');
 
         // Diferencia entre missatges enviats per el client o per un altre
-        if (remitent === nomUsuari) { // Missatges del client
-            nouContenidor.classList.add('message', 'sent');
-            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
-        } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
-            nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<em>${missatge}</em>`;
-            nouContenidor.style.backgroundColor = '#2e7d32';
-        } else if (remitent === 'NOU_CLIENT') {
+        if (remitent === 'NOU_CLIENT') { // Missatge per detectar a nous clients connectats
             const contenidorClients = document.getElementById('user-list');
             const nouLabel = document.createElement('label');
             const nouInput = document.createElement('input');
@@ -66,7 +59,17 @@ document.addEventListener('DOMContentLoaded', function () {
             nouInput.setAttribute('type', 'checkbox');
             nouDiv.classList.add('avatar', 'online');
             nouSpan.textContent = missatge;
+
+            nouLabel.appendChild(nouInput, nouDiv, nouSpan);
+            contenidorClients.appendChild(nouLabel);
             return;
+        } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
+            nouContenidor.classList.add('message', 'received');
+            nouContenidor.innerHTML = `<em>${missatge}</em>`;
+            nouContenidor.style.backgroundColor = '#2e7d32';
+        } else if (remitent === nomUsuari) { // Missatges del client
+            nouContenidor.classList.add('message', 'sent');
+            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
         } else { // Missatges d'un altre client
             nouContenidor.classList.add('message', 'received');
             nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}`;
