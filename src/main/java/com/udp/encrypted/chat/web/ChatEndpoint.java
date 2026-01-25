@@ -113,6 +113,7 @@ public class ChatEndpoint {
      * @param mensaje Missatge per mostrar
      */
     public void enviarMissatgeWebSocket(String mensaje) {
+        System.out.println(mensaje);
         try {
             for (Session s : sessions) {
                 if (s != null && s.isOpen()) {

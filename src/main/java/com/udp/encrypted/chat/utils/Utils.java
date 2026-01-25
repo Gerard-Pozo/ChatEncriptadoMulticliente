@@ -31,6 +31,10 @@ public class Utils {
 	 * Missatge que utilitza el sistema per mostrar per la UI els nous clients
 	 */
 	public static final String WEB_NOU_CLIENT_TROBAT = "$%&MSG_SYSTEM_NOU_CLIENT&%$";
+	/**
+	 * Missatge que utilitza el sistema per treure de la UI els clients desconectats
+	 */
+	public static final String WEB_TREURE_CLIENT_DESCONECTAT = "$%&MSG_SYSTEM_CLIENT_DESCONECTAT&%$";
 
 	/**
 	 * Diu si un client especificat existeix en la llista

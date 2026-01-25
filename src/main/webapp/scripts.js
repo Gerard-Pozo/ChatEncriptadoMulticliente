@@ -26,8 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
     ws.onmessage = function (event) {
         if (!event.data) return;
 
+        console.log("JS: Mensaje recibido ", event.data);
+
         if (event.data.includes("$%&MSG_SYSTEM_NOU_CLIENT&%$")) {
-            afegirMissatge("NOU_CLIENT", event.data.substring(27, event.data.length));
+            console.log("JS: Nuevo cliente: ", event.data.substring(28, event.data.length));
+            afegirMissatge("NOU_CLIENT", event.data.substring(28, event.data.length));
             return;
         }
 
@@ -49,18 +52,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Diferencia entre missatges enviats per el client o per un altre
         if (remitent === 'NOU_CLIENT') { // Missatge per detectar a nous clients connectats
-            const contenidorClients = document.getElementById('user-list');
+            console.log("JS: Nuevo cliente " + missatge);
+            const contenidorClients = document.getElementById('llista-usuaris');
             const nouLabel = document.createElement('label');
             const nouInput = document.createElement('input');
-            const nouDiv = document.createElement('div');
             const nouSpan = document.createElement('span');
+            const nouSpan2 = document.createElement('span');
 
             nouLabel.classList.add('user-item');
             nouInput.setAttribute('type', 'checkbox');
-            nouDiv.classList.add('avatar', 'online');
-            nouSpan.textContent = missatge;
+            nouSpan.classList.add('avatar', 'online');
+            nouSpan.textContent = missatge.charAt(0);
 
-            nouLabel.appendChild(nouInput, nouDiv, nouSpan);
+            const parts = missatge.split('_');
+            nouSpan2.textContent = parts[0];
+            nouSpan2.id = parts[1];
+
+            nouLabel.appendChild(nouInput);
+            nouLabel.appendChild(nouSpan);
+            nouLabel.appendChild(nouSpan2);
             contenidorClients.appendChild(nouLabel);
             return;
         } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "

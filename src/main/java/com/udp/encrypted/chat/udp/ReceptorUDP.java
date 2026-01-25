@@ -43,6 +43,9 @@ public class ReceptorUDP implements Runnable {
 	 * Mapa que registra els últims missatges de vida dels clients, és un
 	 * ConcurrentHashMap ja que aquesta classe impedeix que diversos fils entrin a
 	 * l'hora
+	 * 
+	 * key -> Public key
+	 * value -> Data última mostra de vida
 	 */
 	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
 
@@ -121,7 +124,9 @@ public class ReceptorUDP implements Runnable {
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
-							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_" + missatge.getEmisor().getNom());
+							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_"
+									+ missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getPublica());
+							System.out.println("Nuevo client: " + missatge.getEmisor().getNom());
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
@@ -146,6 +151,7 @@ public class ReceptorUDP implements Runnable {
 				if (tempsActual - entrada.getValue() > 20000) {
 					ultimesMostresDeVida.remove(entrada.getKey());
 					LlistatPersones.eliminarPersona(entrada.getKey());
+					endpoint.enviarMissatgeWebSocket(Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_" + Utils.toHash(entrada.getKey()));
 				}
 			}
 			try {
