@@ -27,6 +27,10 @@ public class Utils {
 	 * Si es cambia la variable també es té que cambiar del js
 	 */
 	public static final String WEB_MISSATGE_SISTEMA_NOM = "$%&MSG_SYSTEM_NOM&%$";
+	/**
+	 * Missatge que utilitza el sistema per mostrar per la UI els nous clients
+	 */
+	public static final String WEB_NOU_CLIENT_TROBAT = "$%&MSG_SYSTEM_NOU_CLIENT&%$";
 
 	/**
 	 * Diu si un client especificat existeix en la llista

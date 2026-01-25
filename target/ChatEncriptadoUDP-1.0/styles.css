@@ -1,3 +1,6 @@
+/* ==========================
+   RESET
+========================== */
 * {
     margin: 0;
     padding: 0;
@@ -5,44 +8,56 @@
     font-family: "Segoe UI", sans-serif;
 }
 
+/* ==========================
+   BODY
+========================== */
 body {
     background-color: #2b2d31;
     height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-/* CONTENEDOR */
-.chat-container {
+/* ==========================
+   APP GENERAL
+========================== */
+.app {
+    display: flex;
     width: 100%;
-    max-width: 480px;
     height: 100vh;
+}
+
+/* ==========================
+   CHAT
+========================== */
+.chat-container {
+    flex: 1;
     background-color: #313338;
     display: flex;
     flex-direction: column;
 }
 
-/* EN PC: centrado y con bordes */
+/* PC */
 @media (min-width: 700px) {
     .chat-container {
+        margin: auto;
         height: 90vh;
+        max-width: 480px;
         border-radius: 12px;
         box-shadow: 0 0 20px rgba(0,0,0,0.4);
     }
 }
 
-/* MENSAJES */
+/* ==========================
+   MENSAJES
+========================== */
 .missatges-chat {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
-
     display: flex;
     flex-direction: column;
 }
 
-/* SCROLL */
 .missatges-chat::-webkit-scrollbar {
     width: 6px;
 }
@@ -63,7 +78,6 @@ body {
     word-wrap: break-word;
 }
 
-/* IZQUIERDA */
 .received {
     background-color: #383a40;
     align-self: flex-start;
@@ -71,7 +85,6 @@ body {
     border-bottom-left-radius: 3px;
 }
 
-/* DERECHA */
 .sent {
     background-color: #5865f2;
     align-self: flex-end;
@@ -79,7 +92,9 @@ body {
     border-bottom-right-radius: 3px;
 }
 
-/* BARRA MENSAJES */
+/* ==========================
+   INPUT CHAT
+========================== */
 .chat-input {
     display: flex;
     padding: 12px;
@@ -87,7 +102,6 @@ body {
     gap: 10px;
 }
 
-/* INPUT */
 .chat-input input {
     flex: 1;
     background-color: #383a40;
@@ -99,7 +113,6 @@ body {
     outline: none;
 }
 
-/* BOTÓN */
 .chat-input button {
     background-color: #5865f2;
     border: none;
@@ -109,33 +122,120 @@ body {
     cursor: pointer;
 }
 
-/* MÓVIL PEQUEÑO */
-@media (max-width: 400px) {
-    .message {
-        max-width: 90%;
-        font-size: 13px;
-    }
-
-    .chat-input input {
-        font-size: 14px;
-    }
+.chat-input button:hover {
+    background-color: #4752c4;
 }
 
-/* MODAL */
+/* ==========================
+   PANEL USUARIOS
+========================== */
+.user-panel {
+    width: 230px;
+    background-color: #1e1f22;
+    border-left: 1px solid #111;
+    display: flex;
+    flex-direction: column;
+}
+
+/* CABECERA */
+.user-panel-header {
+    padding: 12px;
+    font-size: 13px;
+    color: #b5bac1;
+    border-bottom: 1px solid #111;
+    text-transform: uppercase;
+}
+
+/* LISTA */
+.user-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* ITEM USUARIO */
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+    color: white;
+}
+
+.user-item:hover {
+    background-color: #313338;
+}
+
+/* checkbox oculto */
+.user-item input {
+    display: none;
+}
+
+/* seleccionado */
+.user-item input:checked ~ span {
+    color: #5865f2;
+    font-weight: 600;
+}
+
+.user-item input:checked + .avatar {
+    box-shadow: 0 0 0 2px #5865f2;
+}
+
+/* AVATAR */
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #5865f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    position: relative;
+}
+
+/* ESTADO */
+.avatar::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    border: 2px solid #1e1f22;
+}
+
+.avatar.online::after {
+    background-color: #23a55a;
+}
+
+/* SCROLL USUARIOS */
+.user-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background-color: #111;
+    border-radius: 6px;
+}
+
+/* ==========================
+   MODAL USUARIO
+========================== */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(43, 45, 49, 0.9); /* fondo semitransparente */
+    inset: 0;
+    background-color: rgba(43, 45, 49, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* siempre encima del chat */
+    z-index: 1000;
 }
 
-/* Contenido del modal */
 .modal-content {
     background-color: #313338;
     padding: 30px 25px;
@@ -169,10 +269,6 @@ body {
     outline: none;
 }
 
-.modal-content input::placeholder {
-    color: #b5bac1;
-}
-
 .modal-content button {
     padding: 10px 25px;
     background-color: #5865f2;
@@ -180,9 +276,33 @@ body {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
 }
 
 .modal-content button:hover {
     background-color: #4752c4;
+}
+
+/* ==========================
+   MÓVIL: PANEL DESPLEGABLE
+========================== */
+@media (max-width: 700px) {
+
+    .user-panel {
+        position: fixed;
+        top: 0;
+        right: -230px;
+        height: 100%;
+        z-index: 200;
+        transition: right 0.3s ease;
+    }
+
+    .user-panel.open {
+        right: 0;
+    }
+
+    .chat-container {
+        width: 100%;
+        border-radius: 0;
+        height: 100vh;
+    }
 }

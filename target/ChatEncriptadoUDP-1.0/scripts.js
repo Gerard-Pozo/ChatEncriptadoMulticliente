@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
     ws.onmessage = function (event) {
         if (!event.data) return;
 
+        if (event.data.includes("$%&MSG_SYSTEM_NOU_CLIENT&%$")) {
+            afegirMissatge("NOU_CLIENT", event.data.substring(27, event.data.length));
+            return;
+        }
+
         // Separem el format en el que ve el missatge
         const parts = event.data.split('_');
         if (parts.length >= 2) {
@@ -46,10 +51,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (remitent === nomUsuari) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
             nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
-        } else if (remitent === 'SERVIDOR') { // Missatges propis del sistema
+        } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
             nouContenidor.innerHTML = `<em>${missatge}</em>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
+        } else if (remitent === 'NOU_CLIENT') {
+            const contenidorClients = document.getElementById('user-list');
+            const nouLabel = document.createElement('label');
+            const nouInput = document.createElement('input');
+            const nouDiv = document.createElement('div');
+            const nouSpan = document.createElement('span');
+
+            nouLabel.classList.add('user-item');
+            nouInput.setAttribute('type', 'checkbox');
+            nouDiv.classList.add('avatar', 'online');
+            nouSpan.textContent = missatge;
+            return;
         } else { // Missatges d'un altre client
             nouContenidor.classList.add('message', 'received');
             nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}`;

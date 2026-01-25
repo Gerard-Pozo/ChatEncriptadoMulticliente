@@ -86,7 +86,6 @@ public class ReceptorUDP implements Runnable {
 		byte[] buffer = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-
 		while (true) {
 			try {
 				socket.receive(packet);
@@ -114,13 +113,15 @@ public class ReceptorUDP implements Runnable {
 								String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
-								endpoint.enviarMissatgeWebSocket(missatge.getEmisor().getNom() + "_" + missatgeDesencriptat);
+								endpoint.enviarMissatgeWebSocket(
+										missatge.getEmisor().getNom() + "_" + missatgeDesencriptat);
 							}
 						}
 						// Si el missatge és per trobar nou clients
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
+							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_" + missatge.getEmisor());
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {

@@ -79,7 +79,7 @@ public class ChatEndpoint {
      */
     @OnMessage
     public void handlerMessage(String missatge) {
-        System.out.println("Mensaje rebut via WebSocket: " + missatge);
+        System.out.println("Missatge rebut via WebSocket: " + missatge);
 
         // Descarta entre missatges del client i del sistema
         if (!missatge.startsWith(Utils.WEB_MISSATGE_SISTEMA_NOM)) {
@@ -103,7 +103,7 @@ public class ChatEndpoint {
             receptorFil.start();
 
             // Confirma la connexió al client
-            enviarMissatgeWebSocket("SERVIDOR_Conectado como " + persona.getNom());
+            enviarMissatgeWebSocket("SERVIDOR_Connectat com " + persona.getNom());
         }
     }
 
