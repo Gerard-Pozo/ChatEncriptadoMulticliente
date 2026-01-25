@@ -121,7 +121,7 @@ public class ReceptorUDP implements Runnable {
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
-							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_" + missatge.getEmisor());
+							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_" + missatge.getEmisor().getNom());
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
