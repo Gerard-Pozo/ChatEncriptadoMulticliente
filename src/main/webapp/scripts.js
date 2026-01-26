@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
             nouLabel.appendChild(nouSpan2);
             contenidorClients.appendChild(nouLabel);
             return;
-        } else if (remitent === 'CLIENT_DESCONECTAT') {
+        } else if (remitent === missatgeClientDesconectat) {
             document.getElementById(missatge).remove();
         } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
