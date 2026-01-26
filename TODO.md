@@ -1,4 +1,4 @@
-En la UI grafica si dos usuarios se ponen el mismo nombre se buguea y aparece como si se enviaran ellos mismos el mensaje
+Que muestre la hora a la que se hace el mensaje
 
 Adaptar el proyecto para usar TCP
 
