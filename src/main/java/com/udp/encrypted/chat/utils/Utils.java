@@ -34,7 +34,7 @@ public class Utils {
 	/**
 	 * Missatge que utilitza el sistema per treure de la UI els clients desconectats
 	 */
-	public static final String WEB_TREURE_CLIENT_DESCONECTAT = "$%&MSG_SYSTEM_CLIENT_DESCONECTAT&%$";
+	public static final String WEB_TREURE_CLIENT_DESCONECTAT = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
 
 	/**
 	 * Diu si un client especificat existeix en la llista

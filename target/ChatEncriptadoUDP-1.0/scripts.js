@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ws = new WebSocket(wsUrl);
 
     const missatgeNouClient = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
-    const missatgeClientDesconectat = "$%&MSG_SYSTEM_CLIENT_DESCONECTAT&%$";
+    const missatgeClientDesconectat = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
 
     let nomUsuari;
     let id;

@@ -153,7 +153,7 @@ public class ReceptorUDP implements Runnable {
 					ultimesMostresDeVida.remove(entrada.getKey());
 					LlistatPersones.eliminarPersona(entrada.getKey());
 					endpoint.enviarMissatgeWebSocket(
-							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_" + Utils.toHash(entrada.getKey()));
+							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_ "  + "_" + entrada.getKey());
 				}
 			}
 			try {
