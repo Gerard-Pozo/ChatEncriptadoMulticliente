@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const wsUrl = `${protocol}//${host}/ChatEncriptadoUDP/chat`;
     const ws = new WebSocket(wsUrl);
 
-    const missatgeNouClient = "$%&MSG_SYSTEM_NOU_CLIENT&%$";
+    const missatgeNouClient = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
     const missatgeClientDesconectat = "$%&MSG_SYSTEM_CLIENT_DESCONECTAT&%$";
 
     let nomUsuari;
@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log("JS: Mensaje recibido ", event.data);
 
-        if (event.data.includes("$%&MSG_SYSTEM_NOU_CLIENT&%$")) {
+        if (event.data.includes(missatgeNouClient)) {
+            const parts = event.data.split('_');
+            console.log(event.data);
             console.log("JS: Nuevo cliente: ", event.data.substring(28, event.data.length));
-            afegirMissatge("NOU_CLIENT", ' ' ,event.data.substring(28, event.data.length));
+            afegirMissatge("NOU_CLIENT", parts[2], parts[1]);
             return;
         }
 

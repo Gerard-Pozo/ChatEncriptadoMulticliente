@@ -117,8 +117,8 @@ public class ReceptorUDP implements Runnable {
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
 								endpoint.enviarMissatgeWebSocket(
-										missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getId() + "_"
-												+ missatgeDesencriptat);
+										missatge.getEmisor().getNom() + "_"
+												+ missatgeDesencriptat + "_" + missatge.getEmisor().getId());
 							}
 						}
 						// Si el missatge és per trobar nou clients
@@ -126,7 +126,7 @@ public class ReceptorUDP implements Runnable {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
 							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_"
-									+ missatge.getEmisor().getId() + "_" + missatge.getEmisor().getPublica());
+									+ missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getId());
 							System.out.println("Nuevo client: " + missatge.getEmisor().getId());
 						}
 						// Si el missatge és per trobar a clients connectats

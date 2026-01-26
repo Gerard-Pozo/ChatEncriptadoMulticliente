@@ -30,7 +30,7 @@ public class Utils {
 	/**
 	 * Missatge que utilitza el sistema per mostrar per la UI els nous clients
 	 */
-	public static final String WEB_NOU_CLIENT_TROBAT = "$%&MSG_SYSTEM_NOU_CLIENT&%$";
+	public static final String WEB_NOU_CLIENT_TROBAT = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
 	/**
 	 * Missatge que utilitza el sistema per treure de la UI els clients desconectats
 	 */
