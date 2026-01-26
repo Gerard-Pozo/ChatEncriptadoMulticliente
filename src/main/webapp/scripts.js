@@ -68,14 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const nouSpan = document.createElement('span');
             const nouSpan2 = document.createElement('span');
 
-            const parts = missatge.split('_');
-
             nouLabel.classList.add('user-item');
-            nouLabel.id = parts[1];
+            nouLabel.id = idRemitent;
             nouInput.setAttribute('type', 'checkbox');
             nouSpan.classList.add('avatar', 'online');
             nouSpan.textContent = missatge.charAt(0);
-            nouSpan2.textContent = parts[0];
+            nouSpan2.textContent = missatge;
 
             nouLabel.appendChild(nouInput);
             nouLabel.appendChild(nouSpan);
@@ -83,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contenidorClients.appendChild(nouLabel);
             return;
         } else if (remitent === missatgeClientDesconectat) {
-            document.getElementById(missatge).remove();
+            document.getElementById(idRemitent).remove();
         } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
             nouContenidor.innerHTML = `<em>${missatge}</em>`;
