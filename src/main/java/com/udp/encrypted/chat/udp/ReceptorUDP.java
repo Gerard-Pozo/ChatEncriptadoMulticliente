@@ -117,7 +117,8 @@ public class ReceptorUDP implements Runnable {
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
 								endpoint.enviarMissatgeWebSocket(
-										missatge.getEmisor().getNom() + "_" + missatgeDesencriptat);
+										missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getId() + "_"
+												+ missatgeDesencriptat);
 							}
 						}
 						// Si el missatge és per trobar nou clients
@@ -125,9 +126,8 @@ public class ReceptorUDP implements Runnable {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
 							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_"
-									+ missatge.getEmisor().getNom() + "_"
-									+ Utils.toHash(missatge.getEmisor().getPublica().toString()));
-							System.out.println("Nuevo client: " + missatge.getEmisor().getNom());
+									+ missatge.getEmisor().getId() + "_" + missatge.getEmisor().getPublica());
+							System.out.println("Nuevo client: " + missatge.getEmisor().getId());
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
@@ -151,10 +151,9 @@ public class ReceptorUDP implements Runnable {
 			for (Map.Entry<String, Long> entrada : ultimesMostresDeVida.entrySet()) {
 				if (tempsActual - entrada.getValue() > 20000) {
 					ultimesMostresDeVida.remove(entrada.getKey());
-					LlistatPersones.eliminarPersona(entrada.getKey().toString());
+					LlistatPersones.eliminarPersona(entrada.getKey());
 					endpoint.enviarMissatgeWebSocket(
-							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_" + entrada.getKey());
-							System.out.println("Se va a quitar el cliente " + entrada.getKey());
+							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_" + Utils.toHash(entrada.getKey()));
 				}
 			}
 			try {

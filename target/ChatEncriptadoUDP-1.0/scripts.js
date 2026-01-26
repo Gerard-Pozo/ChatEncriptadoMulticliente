@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const missatgeClientDesconectat = "$%&MSG_SYSTEM_CLIENT_DESCONECTAT&%$";
 
     let nomUsuari;
+    let id;
     let estaConectat = false;
 
     ws.onopen = function() {
@@ -31,15 +32,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log("JS: Mensaje recibido ", event.data);
 
-        if (event.data.includes(missatgeNouClient)) {
-            console.log("JS: Nuevo cliente: ", event.data.substring(missatgeNouClient.length + 1, event.data.length));
-            afegirMissatge("NOU_CLIENT", event.data.substring(missatgeNouClient.length + 1, event.data.length));
-            return;
-        }
-
-        if (event.data.includes(missatgeClientDesconectat)) {
-            afegirMissatge("CLIENT_DESCONECTAT", event.data.substring(missatgeClientDesconectat.length + 1, event.data.length));
-            console.log("Cliente desconectado")
+        if (event.data.includes("$%&MSG_SYSTEM_NOU_CLIENT&%$")) {
+            console.log("JS: Nuevo cliente: ", event.data.substring(28, event.data.length));
+            afegirMissatge("NOU_CLIENT", ' ' ,event.data.substring(28, event.data.length));
             return;
         }
 
@@ -47,15 +42,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const parts = event.data.split('_');
         if (parts.length >= 2) {
             const remitent = parts[0];
-            const missatge = parts.slice(1).join('_');
-            afegirMissatge(remitent, missatge);
+            const missatge = parts[1];
+            const idRemitent = parts[2];
+
+            afegirMissatge(remitent,idRemitent, missatge);
         } else {
-            afegirMissatge('SERVIDOR', event.data);
+            console.log("Enviar mensaje: " + event.data)
+            afegirMissatge('SERVIDOR', ' ', event.data);
         }
     };
 
     // Afegeix missatges al DOM
-    function afegirMissatge(remitent, missatge) {
+    function afegirMissatge(remitent, idRemitent, missatge) {
         const contenidor = document.getElementById('chat-general');
         const nouContenidor = document.createElement('div');
 
@@ -88,7 +86,10 @@ document.addEventListener('DOMContentLoaded', function () {
             nouContenidor.classList.add('message', 'received');
             nouContenidor.innerHTML = `<em>${missatge}</em>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
-        } else if (remitent === nomUsuari) { // Missatges del client
+
+            id = idRemitent;
+
+        } else if (idRemitent === id) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
             nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
         } else { // Missatges d'un altre client

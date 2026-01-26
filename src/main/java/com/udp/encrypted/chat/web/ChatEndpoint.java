@@ -87,7 +87,7 @@ public class ChatEndpoint {
                 // El client envia el missatge
                 remitent.enviarMissatge(persona, missatge);
                 // Mostrar el propi missatge que ha enviat el client
-                enviarMissatgeWebSocket(persona.getNom() + "_" + missatge);
+                enviarMissatgeWebSocket(persona.getNom() + "_" + missatge + "_" + persona.getId());
             }
         } else {
             // Crea al client amb el seu nom real
@@ -103,7 +103,7 @@ public class ChatEndpoint {
             receptorFil.start();
 
             // Confirma la connexió al client
-            enviarMissatgeWebSocket("SERVIDOR_Connectat com " + persona.getNom());
+            enviarMissatgeWebSocket("SERVIDOR_Connectat com " + persona.getNom() + "_" + persona.getId());
         }
     }
 
