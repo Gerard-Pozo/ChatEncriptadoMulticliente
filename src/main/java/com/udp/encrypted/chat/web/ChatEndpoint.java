@@ -142,7 +142,7 @@ public class ChatEndpoint implements UI {
                                     + Utils.SEPARADOR + " ";
                             break;
                         case MISSATGE:
-                            missatgePerPassar = Utils.SEPARADOR + missatge.getEmisor().getNom()
+                            missatgePerPassar = missatge.getEmisor().getNom()
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
                                     + Utils.SEPARADOR + missatge.getMissatge();
                         default:
