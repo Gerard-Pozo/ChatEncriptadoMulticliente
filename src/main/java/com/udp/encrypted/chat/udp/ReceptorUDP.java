@@ -17,6 +17,7 @@ import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
+import com.udp.encrypted.chat.web.ChatEndpoint;
 
 /**
  * Classe per rebre els missatges enviats per altres clients.
@@ -42,16 +43,22 @@ public class ReceptorUDP implements Runnable {
 	 * Mapa que registra els últims missatges de vida dels clients, és un
 	 * ConcurrentHashMap ja que aquesta classe impedeix que diversos fils entrin a
 	 * l'hora
+	 * 
+	 * key -> Id
+	 * value -> Data última mostra de vida
 	 */
 	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
+
+	private static ChatEndpoint endpoint;
 
 	/**
 	 * Constructor, demana el client que executa l'aplicació
 	 * 
 	 * @param persona Client
 	 */
-	public ReceptorUDP(Persona persona) {
+	public ReceptorUDP(Persona persona, ChatEndpoint endpoint) {
 		ReceptorUDP.persona = persona;
+		ReceptorUDP.endpoint = endpoint;
 	}
 
 	/**
@@ -78,10 +85,9 @@ public class ReceptorUDP implements Runnable {
 	 * 
 	 * Filtra els missatges segons el tipus.
 	 */
-	public static void udpEscoltant() {
+	public void udpEscoltant() {
 		byte[] buffer = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
 
 		while (true) {
 			try {
@@ -110,13 +116,18 @@ public class ReceptorUDP implements Runnable {
 								String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
-								System.out.println("Missatge desencriptat: " + missatgeDesencriptat);
+								endpoint.enviarMissatgeWebSocket(
+										missatge.getEmisor().getNom() + "_"
+												+ missatgeDesencriptat + "_" + missatge.getEmisor().getId());
 							}
 						}
 						// Si el missatge és per trobar nou clients
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
+							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_"
+									+ missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getId());
+							System.out.println("Nuevo client: " + missatge.getEmisor().getId());
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
@@ -141,6 +152,8 @@ public class ReceptorUDP implements Runnable {
 				if (tempsActual - entrada.getValue() > 20000) {
 					ultimesMostresDeVida.remove(entrada.getKey());
 					LlistatPersones.eliminarPersona(entrada.getKey());
+					endpoint.enviarMissatgeWebSocket(
+							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_ "  + "_" + entrada.getKey());
 				}
 			}
 			try {

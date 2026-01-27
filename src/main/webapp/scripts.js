@@ -1,0 +1,148 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Fa la connexió amb websocket al programa
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = window.location.host;
+    const wsUrl = `${protocol}//${host}/ChatEncriptadoUDP/chat`;
+    const ws = new WebSocket(wsUrl);
+
+    const missatgeNouClient = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
+    const missatgeClientDesconectat = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
+
+    let nomUsuari;
+    let id;
+    let estaConectat = false;
+
+    ws.onopen = function() {
+        console.log("WebSocket connectat");
+        estaConectat = true;
+    };
+
+    ws.onclose = function() {
+        console.log("WebSocket desconectat");
+        estaConectat = false;
+    };
+
+    ws.onerror = function(error) {
+        console.error("Error en WebSocket:", error);
+    };
+
+    // Missatges rebuts desde el servidor
+    ws.onmessage = function (event) {
+        if (!event.data) return;
+
+        console.log("JS: Mensaje recibido ", event.data);
+
+        if (event.data.includes(missatgeNouClient)) {
+            const parts = event.data.split('_');
+            console.log(event.data);
+            console.log("JS: Nuevo cliente: ", event.data.substring(28, event.data.length));
+            afegirMissatge("NOU_CLIENT", parts[2], parts[1]);
+            return;
+        }
+
+        // Separem el format en el que ve el missatge
+        const parts = event.data.split('_');
+        if (parts.length >= 2) {
+            const remitent = parts[0];
+            const missatge = parts[1];
+            const idRemitent = parts[2];
+
+            afegirMissatge(remitent,idRemitent, missatge);
+        } else {
+            console.log("Enviar mensaje: " + event.data)
+            afegirMissatge('SERVIDOR', ' ', event.data);
+        }
+    };
+
+    // Afegeix missatges al DOM
+    function afegirMissatge(remitent, idRemitent, missatge) {
+        const contenidor = document.getElementById('chat-general');
+        const nouContenidor = document.createElement('div');
+
+        // Diferencia entre missatges enviats per el client o per un altre
+        if (remitent === 'NOU_CLIENT') { // Missatge per detectar a nous clients connectats
+            console.log("JS: Nuevo cliente " + missatge);
+            const contenidorClients = document.getElementById('llista-usuaris');
+            const nouLabel = document.createElement('label');
+            const nouInput = document.createElement('input');
+            const nouSpan = document.createElement('span');
+            const nouSpan2 = document.createElement('span');
+
+            nouLabel.classList.add('user-item');
+            nouLabel.id = idRemitent;
+            nouInput.setAttribute('type', 'checkbox');
+            nouSpan.classList.add('avatar', 'online');
+            nouSpan.textContent = missatge.charAt(0);
+            nouSpan2.textContent = missatge;
+
+            nouLabel.appendChild(nouInput);
+            nouLabel.appendChild(nouSpan);
+            nouLabel.appendChild(nouSpan2);
+            contenidorClients.appendChild(nouLabel);
+            return;
+        } else if (remitent === missatgeClientDesconectat) {
+            document.getElementById(idRemitent).remove();
+        } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
+            nouContenidor.classList.add('message', 'received');
+            nouContenidor.innerHTML = `<em>${missatge}</em>`;
+            nouContenidor.style.backgroundColor = '#2e7d32';
+
+            id = idRemitent;
+
+        } else if (idRemitent === id) { // Missatges del client
+            nouContenidor.classList.add('message', 'sent');
+            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
+        } else { // Missatges d'un altre client
+            nouContenidor.classList.add('message', 'received');
+            nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}`;
+        }
+
+        contenidor.appendChild(nouContenidor);
+        // Posiciona el scroll al final
+        contenidor.scrollTop = contenidor.scrollHeight;
+    }
+
+    // Envia els missatges
+    document.getElementById('btn-enviar').addEventListener('click', () => {       
+        const input = document.getElementById('missatge');
+        const missatge = input.value.trim();
+        if (missatge.length === 0) return;
+
+        if (!estaConectat) {
+            alert("No estas connectat al chat");
+            return;
+        }
+
+        // Envia el missatge al servidor
+        ws.send(missatge);
+
+        // Treu el missatge enviat
+        input.value = '';
+        input.focus();
+    });
+
+    // Estableix el nom del client
+    document.getElementById('btn-entrar').addEventListener('click', () => {
+        const input = document.getElementById('nom-usuari');
+        nomUsuari = input.value.trim();
+        if (nomUsuari.length === 0) return;
+
+        document.getElementById('username-modal').style.display = 'none';
+        // Informa al servidor del nom del client
+        ws.send("$%&MSG_SYSTEM_NOM&%$" + nomUsuari);
+    });
+
+    // Permitir enviar amb enter
+    document.getElementById('missatge').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && nomUsuari) {
+            document.getElementById('btn-enviar').click();
+        }
+    });
+    
+    // Permitir enviar el nom amb enter
+    document.getElementById('nom-usuari').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('btn-entrar').click();
+        }
+    });
+});

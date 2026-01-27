@@ -15,7 +15,7 @@ public class LlistatPersones {
 	 * Llistat de les persones conenctades
 	 */
 	private static List<Persona> persones = new ArrayList<>();
-	
+
 	/**
 	 * Permet afegir a la llista una persona
 	 * 
@@ -31,22 +31,18 @@ public class LlistatPersones {
 	 * @param id Id del client
 	 */
 	public static void eliminarPersona(String id) {
-		for (Persona p : persones) {
-			if (p.getId().equals(id)) {
-				persones.remove(p);
-			}
-		}
+		persones.removeIf(p -> p.getId().equals(id));
 	}
-	
+
 	/**
 	 * Permet treure de la llista una persona
 	 * 
 	 * @param persona Client desconnectat
 	 */
 	public static void eliminarPersona(Persona persona) {
-			persones.remove(persona);
+		persones.remove(persona);
 	}
-	
+
 	/**
 	 * Permet agafar la llista de persones
 	 * 
@@ -70,5 +66,5 @@ public class LlistatPersones {
 		}
 		return sb.toString();
 	}
-	
+
 }
