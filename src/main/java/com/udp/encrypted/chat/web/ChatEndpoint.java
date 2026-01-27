@@ -124,7 +124,6 @@ public class ChatEndpoint implements UI {
             for (Session s : sessions) {
                 if (s != null && s.isOpen()) {
                     String missatgePerPassar = "";
-                    System.out.println("Hora de trabajar: " + missatge);
 
                     switch (missatge.getTipus()) {
                         case CONNECTAT:
@@ -143,7 +142,7 @@ public class ChatEndpoint implements UI {
                                     + Utils.SEPARADOR + " ";
                             break;
                         case MISSATGE:
-                            missatgePerPassar = Utils.MISSATGE_NORMAL
+                            missatgePerPassar = Utils.SEPARADOR + missatge.getEmisor().getNom()
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
                                     + Utils.SEPARADOR + missatge.getMissatge();
                         default:

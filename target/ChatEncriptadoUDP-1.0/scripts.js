@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (parts[0] === missatgeClientDesconectat) {
             afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
-            afegirMissatge(parts[0], parts[1], parts[2]);
+            afegirMissatge(parts[0], parts[1] + parts[2]);
         }
     };
 
