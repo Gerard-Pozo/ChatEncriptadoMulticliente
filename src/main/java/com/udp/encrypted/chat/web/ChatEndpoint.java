@@ -145,6 +145,7 @@ public class ChatEndpoint implements UI {
                             missatgePerPassar = missatge.getEmisor().getNom()
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
                                     + Utils.SEPARADOR + missatge.getMissatge();
+                            break;
                         default:
                             break;
                     }

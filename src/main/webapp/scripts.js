@@ -33,11 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ws.onmessage = function (event) {
         if (!event.data) return;
 
-        console.log("JS: Mensaje recibido ", event.data);
-
         const parts = event.data.split(separador);
-
-        console.log(parts);
 
         if (parts[0] === missatgeClientPropiConnectat) {
             afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2]);
@@ -46,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (parts[0] === missatgeClientDesconectat) {
             afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
-            afegirMissatge(parts[0], parts[1] + parts[2]);
+            afegirMissatge(parts[0], parts[1], parts[2]);
         }
     };
 
@@ -80,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(idRemitent).remove();
         } else if (remitent === missatgeClientPropiConnectat) { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
-            console.log(remitent + "____" + idRemitent + "_____" + missatge);
             nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
 
