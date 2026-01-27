@@ -1,10 +1,8 @@
 package com.udp.encrypted.chat.web;
 
 import com.udp.encrypted.chat.models.MissatgeDesencriptat;
-import com.udp.encrypted.chat.models.MissatgeEncriptat;
 import com.udp.encrypted.chat.models.Persona;
 import com.udp.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
-import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
 import com.udp.encrypted.chat.udp.ReceptorUDP;
 import com.udp.encrypted.chat.udp.RemitentUDP;
 import com.udp.encrypted.chat.udp.UtilsUDP;
@@ -126,10 +124,11 @@ public class ChatEndpoint implements UI {
             for (Session s : sessions) {
                 if (s != null && s.isOpen()) {
                     String missatgePerPassar = "";
+                    System.out.println("Hora de trabajar: " + missatge);
 
                     switch (missatge.getTipus()) {
                         case CONNECTAT:
-                            missatgePerPassar = Utils.MISSATGE_SISTEMA_NOM
+                            missatgePerPassar = Utils.CLIENT_PROPI_CONNECTAT
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
                                     + Utils.SEPARADOR + missatge.getEmisor().getNom();
                             break;

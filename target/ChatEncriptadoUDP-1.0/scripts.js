@@ -5,8 +5,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const wsUrl = `${protocol}//${host}/ChatEncriptadoUDP/chat`;
     const ws = new WebSocket(wsUrl);
 
+    const missatgeClientPropiConnectat = "$%&MSG-SYSTEM-CLIENT-PROPI-CONNECTAT&%$";
     const missatgeNouClient = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
     const missatgeClientDesconectat = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
+    const missatgeSistemaNom = "$%&MSG-SYSTEM-NOM&%$";
+    const separador = "#$=/&%";
 
     let nomUsuari;
     let id;
@@ -32,25 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log("JS: Mensaje recibido ", event.data);
 
-        if (event.data.includes(missatgeNouClient)) {
-            const parts = event.data.split('_');
-            console.log(event.data);
-            console.log("JS: Nuevo cliente: ", event.data.substring(28, event.data.length));
-            afegirMissatge("NOU_CLIENT", parts[2], parts[1]);
-            return;
-        }
+        const parts = event.data.split(separador);
 
-        // Separem el format en el que ve el missatge
-        const parts = event.data.split('_');
-        if (parts.length >= 2) {
-            const remitent = parts[0];
-            const missatge = parts[1];
-            const idRemitent = parts[2];
+        console.log(parts);
 
-            afegirMissatge(remitent,idRemitent, missatge);
+        if (parts[0] === missatgeClientPropiConnectat) {
+            afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2]);
+        } else if (parts[0] === missatgeNouClient) {
+            afegirMissatge(missatgeNouClient, parts[1], parts[2]);
+        } else if (parts[0] === missatgeClientDesconectat) {
+            afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
-            console.log("Enviar mensaje: " + event.data)
-            afegirMissatge('SERVIDOR', ' ', event.data);
+            afegirMissatge(parts[0], parts[1], parts[2]);
         }
     };
 
@@ -60,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const nouContenidor = document.createElement('div');
 
         // Diferencia entre missatges enviats per el client o per un altre
-        if (remitent === 'NOU_CLIENT') { // Missatge per detectar a nous clients connectats
+        if (remitent === missatgeNouClient) { // Missatge per detectar a nous clients connectats
             console.log("JS: Nuevo cliente " + missatge);
             const contenidorClients = document.getElementById('llista-usuaris');
             const nouLabel = document.createElement('label');
@@ -82,14 +78,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         } else if (remitent === missatgeClientDesconectat) {
             document.getElementById(idRemitent).remove();
-        } else if (remitent === 'SERVIDOR') { // Missatge "Connectat com "
+        } else if (remitent === missatgeClientPropiConnectat) { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<em>${missatge}</em>`;
+            console.log(remitent + "____" + idRemitent + "_____" + missatge);
+            nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
 
             id = idRemitent;
 
-        } else if (idRemitent === id) { // Missatges del client
+        } else if (id === idRemitent) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
             nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
         } else { // Missatges d'un altre client
@@ -129,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('username-modal').style.display = 'none';
         // Informa al servidor del nom del client
-        ws.send("$%&MSG_SYSTEM_NOM&%$" + nomUsuari);
+        ws.send(missatgeSistemaNom + nomUsuari);
     });
 
     // Permitir enviar amb enter

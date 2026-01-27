@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const missatgeClientPropiConnectat = "$%&MSG-SYSTEM-CLIENT-PROPI-CONNECTAT&%$";
     const missatgeNouClient = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
     const missatgeClientDesconectat = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
+    const missatgeSistemaNom = "$%&MSG-SYSTEM-NOM&%$";
     const separador = "#$=/&%";
 
     let nomUsuari;
@@ -35,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log("JS: Mensaje recibido ", event.data);
 
         const parts = event.data.split(separador);
+
+        console.log(parts);
 
         if (parts[0] === missatgeClientPropiConnectat) {
             afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2]);
@@ -77,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(idRemitent).remove();
         } else if (remitent === missatgeClientPropiConnectat) { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
+            console.log(remitent + "____" + idRemitent + "_____" + missatge);
             nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
 
@@ -122,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('username-modal').style.display = 'none';
         // Informa al servidor del nom del client
-        ws.send("$%&MSG_SYSTEM_NOM&%$" + nomUsuari);
+        ws.send(missatgeSistemaNom + nomUsuari);
     });
 
     // Permitir enviar amb enter

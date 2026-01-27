@@ -1,6 +1,7 @@
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/Main.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/models/LlistatPersones.java
-/home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/models/Missatge.java
+/home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/models/MissatgeDesencriptat.java
+/home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/models/MissatgeEncriptat.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/models/Persona.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/security/DiffieHellman.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/udp/ReceptorUDP.java

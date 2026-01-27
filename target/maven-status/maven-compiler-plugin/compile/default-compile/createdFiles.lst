@@ -3,11 +3,10 @@ com/udp/encrypted/chat/web/ChatEndpoint.class
 com/udp/encrypted/chat/utils/UI.class
 com/udp/encrypted/chat/models/LlistatPersones.class
 com/udp/encrypted/chat/utils/Core.class
-com/udp/encrypted/chat/models/Missatge$TipusMissatge.class
 com/udp/encrypted/chat/security/DiffieHellman.class
 com/udp/encrypted/chat/udp/UtilsUDP.class
 com/udp/encrypted/chat/utils/Utils.class
-com/udp/encrypted/chat/models/Missatge.class
 com/udp/encrypted/chat/models/Persona.class
+com/udp/encrypted/chat/web/ChatEndpoint$1.class
 com/udp/encrypted/chat/udp/ReceptorUDP.class
 com/udp/encrypted/chat/Main.class
