@@ -12,10 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.crypto.SecretKey;
 
 import com.udp.encrypted.chat.models.LlistatPersones;
-import com.udp.encrypted.chat.models.Missatge;
+import com.udp.encrypted.chat.models.MissatgeDesencriptat;
+import com.udp.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
+import com.udp.encrypted.chat.models.MissatgeEncriptat;
 import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
+import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
+import com.udp.encrypted.chat.utils.Core;
 import com.udp.encrypted.chat.utils.Utils;
 import com.udp.encrypted.chat.web.ChatEndpoint;
 
@@ -30,10 +33,11 @@ import com.udp.encrypted.chat.web.ChatEndpoint;
  */
 public class ReceptorUDP implements Runnable {
 
+	private Core core;
 	/**
 	 * Client que està fent ús del programa
 	 */
-	private static Persona persona;
+	private Persona persona;
 	/**
 	 * Socket per rebre les consultes
 	 */
@@ -49,16 +53,14 @@ public class ReceptorUDP implements Runnable {
 	 */
 	private static Map<String, Long> ultimesMostresDeVida = new ConcurrentHashMap<>();
 
-	private static ChatEndpoint endpoint;
-
 	/**
 	 * Constructor, demana el client que executa l'aplicació
 	 * 
 	 * @param persona Client
 	 */
-	public ReceptorUDP(Persona persona, ChatEndpoint endpoint) {
-		ReceptorUDP.persona = persona;
-		ReceptorUDP.endpoint = endpoint;
+	public ReceptorUDP(Persona persona, Core core) {
+		this.persona = persona;
+		this.core = core;
 	}
 
 	/**
@@ -84,6 +86,8 @@ public class ReceptorUDP implements Runnable {
 	 * Es queda escoltant fins que arriba un nou missatge.
 	 * 
 	 * Filtra els missatges segons el tipus.
+	 * 
+	 * Passa els missatges desencriptats al core
 	 */
 	public void udpEscoltant() {
 		byte[] buffer = new byte[2048];
@@ -97,7 +101,7 @@ public class ReceptorUDP implements Runnable {
 
 				ObjectInputStream ois = new ObjectInputStream(bais);
 
-				Missatge missatge = (Missatge) ois.readObject();
+				MissatgeEncriptat missatge = (MissatgeEncriptat) ois.readObject();
 
 				// Impedeix que un missatge que ha enviar l'usuari sigui processat per ell
 				// mateix
@@ -116,18 +120,20 @@ public class ReceptorUDP implements Runnable {
 								String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
-								endpoint.enviarMissatgeWebSocket(
-										missatge.getEmisor().getNom() + "_"
-												+ missatgeDesencriptat + "_" + missatge.getEmisor().getId());
+								core.passarMissatge(
+										new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE,
+												missatge.getEmisor(),
+												missatgeDesencriptat));
 							}
 						}
 						// Si el missatge és per trobar nou clients
 					} else if (missatge.getTipus() == TipusMissatge.DESCUBRIMENT) {
 						if (!Utils.clientExistent(missatge.getEmisor())) {
 							LlistatPersones.afegirPersona(missatge.getEmisor());
-							endpoint.enviarMissatgeWebSocket(Utils.WEB_NOU_CLIENT_TROBAT + "_"
-									+ missatge.getEmisor().getNom() + "_" + missatge.getEmisor().getId());
-							System.out.println("Nuevo client: " + missatge.getEmisor().getId());
+							core.passarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.NOU_CLIENT,
+									missatge.getEmisor(),
+									null));
+
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
@@ -152,8 +158,8 @@ public class ReceptorUDP implements Runnable {
 				if (tempsActual - entrada.getValue() > 20000) {
 					ultimesMostresDeVida.remove(entrada.getKey());
 					LlistatPersones.eliminarPersona(entrada.getKey());
-					endpoint.enviarMissatgeWebSocket(
-							Utils.WEB_TREURE_CLIENT_DESCONECTAT + "_ "  + "_" + entrada.getKey());
+					core.passarMissatge(
+							new MissatgeDesencriptat(TipusMissatgeDesencriptat.TREURE_CLIENT, persona, null));
 				}
 			}
 			try {

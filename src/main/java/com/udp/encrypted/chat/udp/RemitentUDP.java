@@ -20,9 +20,9 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import com.udp.encrypted.chat.models.LlistatPersones;
-import com.udp.encrypted.chat.models.Missatge;
+import com.udp.encrypted.chat.models.MissatgeEncriptat;
 import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
+import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Utils;
 
@@ -71,7 +71,7 @@ public class RemitentUDP {
 			// S'encripta el missatge amb la clau de la sessio
 			String textEncriptat = DiffieHellman.encriptarMissatge(text, clauSessio);
 
-			Missatge missatge = new Missatge(TipusMissatge.ENVIAMENT, textEncriptat, remitent);
+			MissatgeEncriptat missatge = new MissatgeEncriptat(TipusMissatge.ENVIAMENT, textEncriptat, remitent);
 
 			for (Persona destinatari : persones) {
 				// Encripta la clau per desxifrar el missatge amb la privada del remitent i la

@@ -8,9 +8,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import com.udp.encrypted.chat.models.Missatge;
+import com.udp.encrypted.chat.models.MissatgeEncriptat;
 import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.Missatge.TipusMissatge;
+import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
 import com.udp.encrypted.chat.utils.Utils;
 
 /**
@@ -86,7 +86,7 @@ public class UtilsUDP implements Runnable {
      */
     public static void enviarMostraDeVida() {
         while (true) {
-            Missatge missatge = new Missatge(TipusMissatge.VIU, persona);
+            MissatgeEncriptat missatge = new MissatgeEncriptat(TipusMissatge.VIU, persona);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos;
@@ -118,7 +118,7 @@ public class UtilsUDP implements Runnable {
      * Descobreix els equips en la xarxa que están connectats en aquest moment
      */
     public static void enviarDescubriment() {
-        Missatge missatge = new Missatge(Missatge.TipusMissatge.DESCUBRIMENT, persona);
+        MissatgeEncriptat missatge = new MissatgeEncriptat(MissatgeEncriptat.TipusMissatge.DESCUBRIMENT, persona);
 
         try {
             // Per serialitzar l'objecte que passarem

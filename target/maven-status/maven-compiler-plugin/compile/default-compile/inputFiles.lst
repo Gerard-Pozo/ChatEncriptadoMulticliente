@@ -6,5 +6,7 @@
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/udp/ReceptorUDP.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/udp/RemitentUDP.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/udp/UtilsUDP.java
+/home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/utils/Core.java
+/home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/utils/UI.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/utils/Utils.java
 /home/gerard/Documents/ChatEncriptadoUDP/src/main/java/com/udp/encrypted/chat/web/ChatEndpoint.java

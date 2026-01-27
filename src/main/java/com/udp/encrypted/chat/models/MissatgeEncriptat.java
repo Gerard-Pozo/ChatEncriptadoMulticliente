@@ -30,7 +30,7 @@ import java.util.Map;
  * 
  * @author Gerard Pozo i Ivan Rodriguez
  */
-public class Missatge implements Serializable {
+public class MissatgeEncriptat implements Serializable {
 	/**
 	 * Per diferenciar els tipus de missatges que pot escoltar el client.
 	 * 
@@ -72,7 +72,7 @@ public class Missatge implements Serializable {
 	 * @param tipus  Tipus de missatge
 	 * @param emisor Persona que crea el missatge
 	 */
-	public Missatge(TipusMissatge tipus, Persona emisor) {
+	public MissatgeEncriptat(TipusMissatge tipus, Persona emisor) {
 		this.tipus = tipus;
 		this.emisor = emisor;
 	}
@@ -85,7 +85,7 @@ public class Missatge implements Serializable {
 	 * @param missatgeEncriptat Missatge ja encriptat
 	 * @param emisor            Persona que crea el missatge
 	 */
-	public Missatge(TipusMissatge tipus, String missatgeEncriptat, Persona emisor) {
+	public MissatgeEncriptat(TipusMissatge tipus, String missatgeEncriptat, Persona emisor) {
 		this.tipus = tipus;
 		this.missatgeEncriptat = missatgeEncriptat;
 		this.emisor = emisor;

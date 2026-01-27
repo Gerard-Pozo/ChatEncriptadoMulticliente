@@ -1,5 +1,7 @@
 package com.udp.encrypted.chat.utils;
 
+import com.udp.encrypted.chat.models.MissatgeDesencriptat;
+
 public class Core {
 
     private UI ui;
@@ -8,8 +10,8 @@ public class Core {
         this.ui = ui;
     }
 
-    public void passarMissatge(String msg) {
-        ui.mostrarMissatge(msg);
+    public void passarMissatge(MissatgeDesencriptat missatge) {
+        ui.mostrarMissatge(missatge);
     }
 
 }

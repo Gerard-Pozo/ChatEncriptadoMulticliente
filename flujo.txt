@@ -12,3 +12,8 @@ lo que dure el programa en ejecucción
 
 Aclaro un concepto que quizás no he desarrollado bien ahí arriba, las sesiones son entre 2 personas, si hay más de 2 personas 
 se crearán 2 sesiones, una para que sea A -> B y otro para A -> C y así hasta n
+
+
+MENSAJES QUE SE PASAN A LA UI GRAFICA
+
+Mensaje de conectado

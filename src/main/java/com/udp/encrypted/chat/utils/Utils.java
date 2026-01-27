@@ -21,20 +21,30 @@ public class Utils {
 	 */
 	public static final int TEMPS_ENTRE_MOSTRE_VIDA = 5000;
 	/**
+	 * Els simbols per separar la cadena de caracters
+	 */
+	public static final String SEPARADOR = "#$=/&%";
+	/**
 	 * Missatge que utilitza el sistema per sapiguer que un missatge vol indicar un
 	 * nom d'usuari
-	 * 
-	 * Si es cambia la variable també es té que cambiar del js
 	 */
-	public static final String WEB_MISSATGE_SISTEMA_NOM = "$%&MSG_SYSTEM_NOM&%$";
+	public static final String MISSATGE_SISTEMA_NOM = "$%&MSG-SYSTEM-NOM&%$";
 	/**
 	 * Missatge que utilitza el sistema per mostrar per la UI els nous clients
 	 */
-	public static final String WEB_NOU_CLIENT_TROBAT = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
+	public static final String NOU_CLIENT_TROBAT = "$%&MSG-SYSTEM-NOU-CLIENT&%$";
 	/**
 	 * Missatge que utilitza el sistema per treure de la UI els clients desconectats
 	 */
-	public static final String WEB_TREURE_CLIENT_DESCONECTAT = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
+	public static final String TREURE_CLIENT_DESCONECTAT = "$%&MSG-SYSTEM-CLIENT-DESCONECTAT&%$";
+	/**
+	 * Indica que el client que executa la aplicació s'ha connectat
+	 */
+	public static final String CLIENT_PROPI_CONNECTAT = "$%&MSG-SYSTEM-CLIENT-PROPI-CONNECTAT&%$";
+	/**
+	 * Indica que es un missatge dels propis clients
+	 */
+	public static final String MISSATGE_NORMAL = "$%&MSG_CLIENT&%$";
 
 	/**
 	 * Diu si un client especificat existeix en la llista

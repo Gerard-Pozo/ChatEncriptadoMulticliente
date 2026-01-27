@@ -1,9 +1,15 @@
 package com.udp.encrypted.chat.web;
 
+import com.udp.encrypted.chat.models.MissatgeDesencriptat;
+import com.udp.encrypted.chat.models.MissatgeEncriptat;
 import com.udp.encrypted.chat.models.Persona;
+import com.udp.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
+import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
 import com.udp.encrypted.chat.udp.ReceptorUDP;
 import com.udp.encrypted.chat.udp.RemitentUDP;
 import com.udp.encrypted.chat.udp.UtilsUDP;
+import com.udp.encrypted.chat.utils.Core;
+import com.udp.encrypted.chat.utils.UI;
 import com.udp.encrypted.chat.utils.Utils;
 
 import jakarta.websocket.OnMessage;
@@ -26,8 +32,9 @@ import java.util.Set;
  * @author Gerard Pozo i Ivan Rodriguez
  */
 @ServerEndpoint("/chat")
-public class ChatEndpoint {
+public class ChatEndpoint implements UI {
 
+    private Core core;
     /**
      * El client
      */
@@ -82,19 +89,20 @@ public class ChatEndpoint {
         System.out.println("Missatge rebut via WebSocket: " + missatge);
 
         // Descarta entre missatges del client i del sistema
-        if (!missatge.startsWith(Utils.WEB_MISSATGE_SISTEMA_NOM)) {
+        if (!missatge.startsWith(Utils.MISSATGE_SISTEMA_NOM)) {
             if (persona != null) {
                 // El client envia el missatge
                 remitent.enviarMissatge(persona, missatge);
                 // Mostrar el propi missatge que ha enviat el client
-                enviarMissatgeWebSocket(persona.getNom() + "_" + missatge + "_" + persona.getId());
+                mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona, missatge));
             }
         } else {
             // Crea al client amb el seu nom real
-            persona = new Persona(missatge.substring(Utils.WEB_MISSATGE_SISTEMA_NOM.length(), missatge.length()));
+            persona = new Persona(missatge.substring(Utils.MISSATGE_SISTEMA_NOM.length(), missatge.length()));
             System.out.println("Usuari nou: " + persona.getNom());
 
-            receptor = new ReceptorUDP(persona, this);
+            core = new Core(this);
+            receptor = new ReceptorUDP(persona, core);
 
             // Inicia els fils
             Thread receptorFil = new Thread(receptor);
@@ -103,7 +111,7 @@ public class ChatEndpoint {
             receptorFil.start();
 
             // Confirma la connexió al client
-            enviarMissatgeWebSocket("SERVIDOR_Connectat com " + persona.getNom() + "_" + persona.getId());
+            mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.CONNECTAT, persona, null));
         }
     }
 
@@ -112,12 +120,38 @@ public class ChatEndpoint {
      * 
      * @param mensaje Missatge per mostrar
      */
-    public void enviarMissatgeWebSocket(String mensaje) {
-        System.out.println(mensaje);
+    @Override
+    public void mostrarMissatge(MissatgeDesencriptat missatge) {
         try {
             for (Session s : sessions) {
                 if (s != null && s.isOpen()) {
-                    s.getBasicRemote().sendText(mensaje);
+                    String missatgePerPassar = "";
+
+                    switch (missatge.getTipus()) {
+                        case CONNECTAT:
+                            missatgePerPassar = Utils.MISSATGE_SISTEMA_NOM
+                                    + Utils.SEPARADOR + missatge.getEmisor().getId()
+                                    + Utils.SEPARADOR + missatge.getEmisor().getNom();
+                            break;
+                        case NOU_CLIENT:
+                            missatgePerPassar = Utils.NOU_CLIENT_TROBAT
+                                    + Utils.SEPARADOR + missatge.getEmisor().getId() 
+                                    + Utils.SEPARADOR + missatge.getEmisor().getNom();
+                            break;
+                        case TREURE_CLIENT:
+                            missatgePerPassar = Utils.TREURE_CLIENT_DESCONECTAT
+                                    + Utils.SEPARADOR + missatge.getEmisor().getId()
+                                    + Utils.SEPARADOR + " ";
+                            break;
+                        case MISSATGE:
+                            missatgePerPassar = Utils.MISSATGE_NORMAL
+                                    + Utils.SEPARADOR + missatge.getEmisor().getId()
+                                    + Utils.SEPARADOR + missatge.getMissatge();
+                        default:
+                            break;
+                    }
+
+                    s.getBasicRemote().sendText(missatgePerPassar);
                 }
             }
 
