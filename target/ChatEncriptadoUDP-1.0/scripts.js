@@ -15,17 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
     let id;
     let estaConectat = false;
 
-    ws.onopen = function() {
+    ws.onopen = function () {
         console.log("WebSocket connectat");
         estaConectat = true;
     };
 
-    ws.onclose = function() {
+    ws.onclose = function () {
         console.log("WebSocket desconectat");
         estaConectat = false;
     };
 
-    ws.onerror = function(error) {
+    ws.onerror = function (error) {
         console.error("Error en WebSocket:", error);
     };
 
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Envia els missatges
-    document.getElementById('btn-enviar').addEventListener('click', () => {       
+    document.getElementById('btn-enviar').addEventListener('click', () => {
         const input = document.getElementById('missatge');
         const missatge = input.value.trim();
         if (missatge.length === 0) return;
@@ -107,8 +107,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const seleccionats = document.querySelectorAll('#llista-usuaris input[type="checkbox"]:checked');
+        let clientsSeleccionats = "";
+        if (seleccionats.length != 0) {
+            seleccionats.forEach(cb => {
+                const label = cb.parentElement; 
+                clientsSeleccionats += label.id + separador;
+            });
+        }
+
         // Envia el missatge al servidor
-        ws.send(missatge);
+        ws.send(clientsSeleccionats + missatge);
 
         // Treu el missatge enviat
         input.value = '';
@@ -132,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('btn-enviar').click();
         }
     });
-    
+
     // Permitir enviar el nom amb enter
     document.getElementById('nom-usuari').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {

@@ -57,7 +57,7 @@ public class ReceptorUDP implements Runnable {
 	 * 
 	 * @param persona Client
 	 */
-	public ReceptorUDP(Persona persona, Core core) {
+	public ReceptorUDP(Core core, Persona persona) {
 		this.persona = persona;
 		this.core = core;
 	}

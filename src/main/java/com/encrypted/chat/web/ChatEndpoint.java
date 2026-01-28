@@ -9,10 +9,14 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
+import com.encrypted.chat.models.LlistatPersones;
 import com.encrypted.chat.models.MissatgeDesencriptat;
 import com.encrypted.chat.models.Persona;
 import com.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
+import com.encrypted.chat.tcp.ReceptorTCP;
+import com.encrypted.chat.tcp.RemitentTCP;
 import com.encrypted.chat.udp.ReceptorUDP;
 import com.encrypted.chat.udp.RemitentUDP;
 import com.encrypted.chat.udp.UtilsUDP;
@@ -37,14 +41,15 @@ public class ChatEndpoint implements UI {
      * El client
      */
     private Persona persona;
+    private ReceptorTCP receptorTCP;
     /**
      * Classe per enviar els missatges
      */
-    private RemitentUDP remitent = new RemitentUDP();
+    private RemitentUDP remitentUDP = new RemitentUDP();
     /**
      * Classe per rebre els missatges
      */
-    private ReceptorUDP receptor;
+    private ReceptorUDP receptorUDP;
 
     /**
      * Si el client obra més d'un cop la página s'afegirán a la llista de sesions
@@ -90,7 +95,20 @@ public class ChatEndpoint implements UI {
         if (!missatge.startsWith(Utils.MISSATGE_SISTEMA_NOM)) {
             if (persona != null) {
                 // El client envia el missatge
-                remitent.enviarMissatge(persona, missatge);
+
+                String[] parts = missatge.split(Pattern.quote(Utils.SEPARADOR));
+
+                // Missatge TCP
+                if (parts.length > 1) {
+                    MissatgeDesencriptat md = new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona,
+                            parts[parts.length - 1]);
+                    for (int i = 0; i < parts.length - 1; i++) {
+                        md.setDestinatari(LlistatPersones.getPersona(parts[i]));
+                        RemitentTCP.enviarMissatge(md);
+                    }
+                } else {
+                    remitentUDP.enviarMissatge(persona, missatge);
+                }
                 // Mostrar el propi missatge que ha enviat el client
                 mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona, missatge));
             }
@@ -100,13 +118,16 @@ public class ChatEndpoint implements UI {
             System.out.println("Usuari nou: " + persona.getNom());
 
             core = new Core(this);
-            receptor = new ReceptorUDP(persona, core);
+            receptorUDP = new ReceptorUDP(core, persona);
+            receptorTCP = new ReceptorTCP(core, persona);
 
             // Inicia els fils
-            Thread receptorFil = new Thread(receptor);
+            Thread receptorTCPFil = new Thread(receptorTCP);
+            Thread receptorUDPFil = new Thread(receptorUDP);
             Thread utils = new Thread(new UtilsUDP(persona));
+            receptorTCPFil.start();
+            receptorUDPFil.start();
             utils.start();
-            receptorFil.start();
 
             // Confirma la connexió al client
             mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.CONNECTAT, persona, null));

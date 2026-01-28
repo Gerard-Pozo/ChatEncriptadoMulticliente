@@ -1,8 +1,5 @@
 package com.encrypted.chat.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MissatgeDesencriptat {
     /**
      * Per diferenciar els tipus de missatges que pot escoltar el client.
@@ -23,7 +20,7 @@ public class MissatgeDesencriptat {
      * La persona que envia el missatge
      */
     private Persona emisor;
-    private List<Persona> destinataris = new ArrayList<>();
+    private Persona destinatari;
 
     /**
      * Constructor que permet crear un missatge amb el tipus, el missatge ja
@@ -66,11 +63,11 @@ public class MissatgeDesencriptat {
         return emisor;
     }
 
-    public List<Persona> getDestinataris() {
-        return destinataris;
+    public Persona getDestinatari() {
+        return destinatari;
     }
 
-    public void addDestinatari(Persona persona) {
-        destinataris.add(persona);
+    public void setDestinatari(Persona p) {
+        destinatari = p;
     }
 }
