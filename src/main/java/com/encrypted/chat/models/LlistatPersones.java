@@ -1,4 +1,4 @@
-package com.udp.encrypted.chat.models;
+package com.encrypted.chat.models;
 
 import java.util.ArrayList;
 import java.util.List;

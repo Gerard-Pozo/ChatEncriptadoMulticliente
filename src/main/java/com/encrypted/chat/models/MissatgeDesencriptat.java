@@ -1,4 +1,7 @@
-package com.udp.encrypted.chat.models;
+package com.encrypted.chat.models;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MissatgeDesencriptat {
     /**
@@ -20,14 +23,15 @@ public class MissatgeDesencriptat {
      * La persona que envia el missatge
      */
     private Persona emisor;
+    private List<Persona> destinataris = new ArrayList<>();
 
     /**
      * Constructor que permet crear un missatge amb el tipus, el missatge ja
      * encriptat i la persona que envia el missatge
      * 
-     * @param tipus             Tipus de missatge
-     * @param missatgeEncriptat Missatge ja encriptat
-     * @param emisor            Persona que crea el missatge
+     * @param tipus    Tipus de missatge
+     * @param missatge Missatge ja encriptat
+     * @param emisor   Persona que crea el missatge
      */
     public MissatgeDesencriptat(TipusMissatgeDesencriptat tipus, Persona emisor, String missatge) {
         this.tipus = tipus;
@@ -60,5 +64,13 @@ public class MissatgeDesencriptat {
      */
     public Persona getEmisor() {
         return emisor;
+    }
+
+    public List<Persona> getDestinataris() {
+        return destinataris;
+    }
+
+    public void addDestinatari(Persona persona) {
+        destinataris.add(persona);
     }
 }

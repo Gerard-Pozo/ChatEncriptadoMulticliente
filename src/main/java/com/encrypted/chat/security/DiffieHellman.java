@@ -1,4 +1,4 @@
-package com.udp.encrypted.chat.security;
+package com.encrypted.chat.security;
 
 import java.security.InvalidKeyException;
 import java.security.KeyPair;

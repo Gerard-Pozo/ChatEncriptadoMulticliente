@@ -1,14 +1,4 @@
-package com.udp.encrypted.chat.web;
-
-import com.udp.encrypted.chat.models.MissatgeDesencriptat;
-import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
-import com.udp.encrypted.chat.udp.ReceptorUDP;
-import com.udp.encrypted.chat.udp.RemitentUDP;
-import com.udp.encrypted.chat.udp.UtilsUDP;
-import com.udp.encrypted.chat.utils.Core;
-import com.udp.encrypted.chat.utils.UI;
-import com.udp.encrypted.chat.utils.Utils;
+package com.encrypted.chat.web;
 
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
@@ -19,6 +9,16 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.encrypted.chat.models.MissatgeDesencriptat;
+import com.encrypted.chat.models.Persona;
+import com.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
+import com.encrypted.chat.udp.ReceptorUDP;
+import com.encrypted.chat.udp.RemitentUDP;
+import com.encrypted.chat.udp.UtilsUDP;
+import com.encrypted.chat.utils.Core;
+import com.encrypted.chat.utils.UI;
+import com.encrypted.chat.utils.Utils;
 
 /**
  * Aquesta classe permet tenir una connexió amb una página web bidireccional i

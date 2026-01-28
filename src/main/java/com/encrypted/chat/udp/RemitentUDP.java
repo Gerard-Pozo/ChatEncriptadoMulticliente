@@ -1,4 +1,4 @@
-package com.udp.encrypted.chat.udp;
+package com.encrypted.chat.udp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,12 +19,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-import com.udp.encrypted.chat.models.LlistatPersones;
-import com.udp.encrypted.chat.models.MissatgeEncriptat;
-import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
-import com.udp.encrypted.chat.security.DiffieHellman;
-import com.udp.encrypted.chat.utils.Utils;
+import com.encrypted.chat.models.LlistatPersones;
+import com.encrypted.chat.models.MissatgeEncriptat;
+import com.encrypted.chat.models.Persona;
+import com.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
+import com.encrypted.chat.security.DiffieHellman;
+import com.encrypted.chat.utils.Utils;
 
 /**
  * Aquesta classe permet enviar missatges xifrats per la xarxa
@@ -107,7 +107,7 @@ public class RemitentUDP {
 			// Envia el missatge per broadcast
 			byte[] buffer = baos.toByteArray();
 			InetAddress broadcast = InetAddress.getByName("255.255.255.255");
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, broadcast, Utils.PORT);
+			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, broadcast, Utils.PORT_UDP);
 			socket.send(packet);
 
 			oos.close();

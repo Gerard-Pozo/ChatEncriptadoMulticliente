@@ -1,4 +1,4 @@
-package com.udp.encrypted.chat.udp;
+package com.encrypted.chat.udp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,10 +8,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import com.udp.encrypted.chat.models.MissatgeEncriptat;
-import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
-import com.udp.encrypted.chat.utils.Utils;
+import com.encrypted.chat.models.MissatgeEncriptat;
+import com.encrypted.chat.models.Persona;
+import com.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
+import com.encrypted.chat.utils.Utils;
 
 /**
  * Classe que s'utilitza per cercar els nous clients que es connectan al
@@ -98,7 +98,7 @@ public class UtilsUDP implements Runnable {
                 byte[] data = baos.toByteArray();
 
                 DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName("255.255.255.255"),
-                        Utils.PORT);
+                        Utils.PORT_UDP);
                 socket.send(packet);
                 oos.close();
                 baos.close();
@@ -136,7 +136,7 @@ public class UtilsUDP implements Runnable {
                     data,
                     data.length,
                     InetAddress.getByName("255.255.255.255"),
-                    Utils.PORT);
+                    Utils.PORT_UDP);
 
             // Mandem l'objecte a la xarxa per el broadcast en el port especificat.
             socket.send(packet);

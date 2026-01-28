@@ -1,17 +1,24 @@
-package com.udp.encrypted.chat.utils;
+package com.encrypted.chat.utils;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.udp.encrypted.chat.models.LlistatPersones;
-import com.udp.encrypted.chat.models.Persona;
+import com.encrypted.chat.models.LlistatPersones;
+import com.encrypted.chat.models.Persona;
 
 public class Utils {
 
 	/**
-	 * Port utilitzat per fer les comunicacions
+	 * Port utilitzat per fer les comunicacions per TCP
 	 */
-	public static final int PORT = 5000;
+	public static final int PORT_TCP = 5000;
+	/**
+	 * Port utilitzat per fer les comunicacions per UDP
+	 */
+	public static final int PORT_UDP = 5001;
 	/**
 	 * El temps que pasa entre una cerca de nou clients i un altra
 	 */
@@ -85,5 +92,32 @@ public class Utils {
 			return null;
 		}
 	}
+
+	/**
+	 * Recorreix les interficies de xarxa buscant la ip que té l'equip
+	 * 
+	 * @return IP del equip
+	 */
+	public static String obtenirIpLocal() {
+        try {
+            for (NetworkInterface ni : java.util.Collections.list(
+                    NetworkInterface.getNetworkInterfaces())) {
+
+                for (InetAddress addr : java.util.Collections.list(
+                        ni.getInetAddresses())) {
+
+                    if (!addr.isLoopbackAddress()
+                            && addr instanceof Inet4Address) {
+
+                        return addr.getHostAddress();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 }

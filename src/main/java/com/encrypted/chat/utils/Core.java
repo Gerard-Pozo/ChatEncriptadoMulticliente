@@ -1,6 +1,6 @@
-package com.udp.encrypted.chat.utils;
+package com.encrypted.chat.utils;
 
-import com.udp.encrypted.chat.models.MissatgeDesencriptat;
+import com.encrypted.chat.models.MissatgeDesencriptat;
 
 public class Core {
 

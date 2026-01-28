@@ -1,4 +1,4 @@
-package com.udp.encrypted.chat.udp;
+package com.encrypted.chat.udp;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -11,15 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.SecretKey;
 
-import com.udp.encrypted.chat.models.LlistatPersones;
-import com.udp.encrypted.chat.models.MissatgeDesencriptat;
-import com.udp.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
-import com.udp.encrypted.chat.models.MissatgeEncriptat;
-import com.udp.encrypted.chat.models.Persona;
-import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
-import com.udp.encrypted.chat.security.DiffieHellman;
-import com.udp.encrypted.chat.utils.Core;
-import com.udp.encrypted.chat.utils.Utils;
+import com.encrypted.chat.models.LlistatPersones;
+import com.encrypted.chat.models.MissatgeDesencriptat;
+import com.encrypted.chat.models.MissatgeEncriptat;
+import com.encrypted.chat.models.Persona;
+import com.encrypted.chat.models.MissatgeDesencriptat.TipusMissatgeDesencriptat;
+import com.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
+import com.encrypted.chat.security.DiffieHellman;
+import com.encrypted.chat.utils.Core;
+import com.encrypted.chat.utils.Utils;
 
 /**
  * Classe per rebre els missatges enviats per altres clients.
@@ -68,7 +68,7 @@ public class ReceptorUDP implements Runnable {
 	 */
 	public void run() {
 		try {
-			socket = new DatagramSocket(Utils.PORT);
+			socket = new DatagramSocket(Utils.PORT_UDP);
 
 			// Fil per escoltar connexions
 			new Thread(() -> udpEscoltant()).start();

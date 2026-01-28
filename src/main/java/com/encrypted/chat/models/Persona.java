@@ -1,12 +1,14 @@
-package com.udp.encrypted.chat.models;
+package com.encrypted.chat.models;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-import com.udp.encrypted.chat.security.DiffieHellman;
-import com.udp.encrypted.chat.utils.Utils;
+import com.encrypted.chat.security.DiffieHellman;
+import com.encrypted.chat.utils.Utils;
 
 /**
  * Permet crear una persona amb la seva clau publica i clau privada.
@@ -44,6 +46,7 @@ public class Persona implements Serializable {
 	 * Clau privada
 	 */
 	private transient PrivateKey privada;
+	private String ipv4;
 
 	/**
 	 * Constructor, permet crear una persona amb un nom
@@ -61,6 +64,8 @@ public class Persona implements Serializable {
 		this.privada = claus.getPrivate();
 		// Converteix la clau publica en un hash per ser utilitzat com id
 		this.id = Utils.toHash(publica.toString());
+		// Agafa la ip
+		this.ipv4 = Utils.obtenirIpLocal();
 	}
 
 	/**
@@ -97,6 +102,10 @@ public class Persona implements Serializable {
 	 */
 	public String getId() {
 		return id;
+	}
+
+	public String getIpv4() {
+		return ipv4;
 	}
 
 	/**
