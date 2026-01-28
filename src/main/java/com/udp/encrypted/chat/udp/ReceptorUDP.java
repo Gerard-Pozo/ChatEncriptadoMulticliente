@@ -20,7 +20,6 @@ import com.udp.encrypted.chat.models.MissatgeEncriptat.TipusMissatge;
 import com.udp.encrypted.chat.security.DiffieHellman;
 import com.udp.encrypted.chat.utils.Core;
 import com.udp.encrypted.chat.utils.Utils;
-import com.udp.encrypted.chat.web.ChatEndpoint;
 
 /**
  * Classe per rebre els missatges enviats per altres clients.
@@ -161,11 +160,11 @@ public class ReceptorUDP implements Runnable {
 			for (Map.Entry<String, Long> entrada : ultimesMostresDeVida.entrySet()) {
 				if (tempsActual - entrada.getValue() > 20000) {
 					ultimesMostresDeVida.remove(entrada.getKey());
-					LlistatPersones.eliminarPersona(entrada.getKey());
 					core.passarMissatge(
 							new MissatgeDesencriptat(TipusMissatgeDesencriptat.TREURE_CLIENT,
 									LlistatPersones.getPersona(entrada.getKey()), 
 									null));
+                                        LlistatPersones.eliminarPersona(entrada.getKey());
 				}
 			}
 			try {

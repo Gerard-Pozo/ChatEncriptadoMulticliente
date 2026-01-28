@@ -53,6 +53,7 @@ public class LlistatPersones {
 	}
 
 	public static Persona getPersona(String id) {
+		System.out.println("ID: " + id);
 		for (Persona p : persones) {
 			if (p.getId().equals(id)) {
 				return p;
