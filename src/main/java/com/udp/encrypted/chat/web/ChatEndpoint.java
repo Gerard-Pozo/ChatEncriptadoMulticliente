@@ -124,6 +124,7 @@ public class ChatEndpoint implements UI {
             for (Session s : sessions) {
                 if (s != null && s.isOpen()) {
                     String missatgePerPassar = "";
+                    System.out.println("Missatge arribat " + missatge);
 
                     switch (missatge.getTipus()) {
                         case CONNECTAT:
@@ -133,7 +134,7 @@ public class ChatEndpoint implements UI {
                             break;
                         case NOU_CLIENT:
                             missatgePerPassar = Utils.NOU_CLIENT_TROBAT
-                                    + Utils.SEPARADOR + missatge.getEmisor().getId() 
+                                    + Utils.SEPARADOR + missatge.getEmisor().getId()
                                     + Utils.SEPARADOR + missatge.getEmisor().getNom();
                             break;
                         case TREURE_CLIENT:

@@ -52,6 +52,15 @@ public class LlistatPersones {
 		return (ArrayList<Persona>) persones;
 	}
 
+	public static Persona getPersona(String id) {
+		for (Persona p : persones) {
+			if (p.getId().equals(id)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Retorna totes les persones
 	 * 
