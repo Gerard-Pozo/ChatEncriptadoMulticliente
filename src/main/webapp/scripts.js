@@ -15,17 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
     let id;
     let estaConectat = false;
 
-    ws.onopen = function() {
+    ws.onopen = function () {
         console.log("WebSocket connectat");
         estaConectat = true;
     };
 
-    ws.onclose = function() {
+    ws.onclose = function () {
         console.log("WebSocket desconectat");
         estaConectat = false;
     };
 
-    ws.onerror = function(error) {
+    ws.onerror = function (error) {
         console.error("Error en WebSocket:", error);
     };
 
@@ -34,22 +34,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!event.data) return;
 
         const parts = event.data.split(separador);
+        console.log(parts);
 
         if (parts[0] === missatgeClientPropiConnectat) {
-            afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2]);
+            afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2], parts[3]);
         } else if (parts[0] === missatgeNouClient) {
-            console.log("NUEVO CLIENTE: ", parts[0], "____", parts[1], "_____", parts[2]);
             afegirMissatge(missatgeNouClient, parts[1], parts[2]);
         } else if (parts[0] === missatgeClientDesconectat) {
-            console.log("NUEVO CLIENTE: ", parts[0], "____", parts[1], "_____", parts[2]);
             afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
-            afegirMissatge(parts[0], parts[1], parts[2]);
+            afegirMissatge(parts[0], parts[1], parts[2], parts[3]);
         }
     };
 
     // Afegeix missatges al DOM
-    function afegirMissatge(remitent, idRemitent, missatge) {
+    function afegirMissatge(remitent, idRemitent, temps, missatge) {
         const contenidor = document.getElementById('chat-general');
         const nouContenidor = document.createElement('div');
 
@@ -78,17 +77,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(idRemitent).remove();
         } else if (remitent === missatgeClientPropiConnectat) { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em>`;
+            nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em><br>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
+            nouContenidor.innerHTML += `<i>${temps}</i>`
 
             id = idRemitent;
 
         } else if (id === idRemitent) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
-            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
+            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}<br>`;
+            nouContenidor.innerHTML += `<i>${temps}</i>`
         } else { // Missatges d'un altre client
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}`;
+            nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}<br>`;
+            nouContenidor.innerHTML += `<i>${temps}</i>`
         }
 
         contenidor.appendChild(nouContenidor);
@@ -97,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Envia els missatges
-    document.getElementById('btn-enviar').addEventListener('click', () => {       
+    document.getElementById('btn-enviar').addEventListener('click', () => {
         const input = document.getElementById('missatge');
         const missatge = input.value.trim();
         if (missatge.length === 0) return;
@@ -107,8 +109,17 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const seleccionats = document.querySelectorAll('#llista-usuaris input[type="checkbox"]:checked');
+        let clientsSeleccionats = "";
+        if (seleccionats.length != 0) {
+            seleccionats.forEach(cb => {
+                const label = cb.parentElement; 
+                clientsSeleccionats += label.id + separador;
+            });
+        }
+
         // Envia el missatge al servidor
-        ws.send(missatge);
+        ws.send(clientsSeleccionats + missatge);
 
         // Treu el missatge enviat
         input.value = '';
@@ -132,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('btn-enviar').click();
         }
     });
-    
+
     // Permitir enviar el nom amb enter
     document.getElementById('nom-usuari').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
