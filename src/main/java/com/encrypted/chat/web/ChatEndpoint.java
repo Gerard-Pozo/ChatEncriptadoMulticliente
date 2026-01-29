@@ -104,8 +104,12 @@ public class ChatEndpoint implements UI {
                             parts[parts.length - 1]);
                     for (int i = 0; i < parts.length - 1; i++) {
                         md.setDestinatari(LlistatPersones.getPersona(parts[i]));
+                        System.out.println("Destinatari: " + parts[i]);
+                        System.out.println("Missatge: " + parts[parts.length - 1]);
                         RemitentTCP.enviarMissatge(md);
+                        mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona, parts[parts.length - 1]));
                     }
+                    return;
                 } else {
                     remitentUDP.enviarMissatge(persona, missatge);
                 }

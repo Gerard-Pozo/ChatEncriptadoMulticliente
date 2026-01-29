@@ -99,25 +99,32 @@ public class Utils {
 	 * @return IP del equip
 	 */
 	public static String obtenirIpLocal() {
-        try {
-            for (NetworkInterface ni : java.util.Collections.list(
-                    NetworkInterface.getNetworkInterfaces())) {
+    try {
+        for (NetworkInterface ni : java.util.Collections.list(
+                NetworkInterface.getNetworkInterfaces())) {
 
-                for (InetAddress addr : java.util.Collections.list(
-                        ni.getInetAddresses())) {
+            for (InetAddress addr : java.util.Collections.list(
+                    ni.getInetAddresses())) {
 
-                    if (!addr.isLoopbackAddress()
-                            && addr instanceof Inet4Address) {
+                if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
 
-                        return addr.getHostAddress();
+                    String ip = addr.getHostAddress();
+                    int primerOcteto = Integer.parseInt(ip.split("\\.")[0]);
+
+                    // Solo clase B o C
+                    if ((primerOcteto >= 128 && primerOcteto <= 191) ||
+                        (primerOcteto >= 192 && primerOcteto <= 223)) {
+
+                        return ip;
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        return null;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return null;
+}
 
 }

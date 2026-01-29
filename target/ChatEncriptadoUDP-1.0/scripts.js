@@ -38,10 +38,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (parts[0] === missatgeClientPropiConnectat) {
             afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2]);
         } else if (parts[0] === missatgeNouClient) {
-            console.log("NUEVO CLIENTE: ", parts[0], "____", parts[1], "_____", parts[2]);
             afegirMissatge(missatgeNouClient, parts[1], parts[2]);
         } else if (parts[0] === missatgeClientDesconectat) {
-            console.log("NUEVO CLIENTE: ", parts[0], "____", parts[1], "_____", parts[2]);
             afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
             afegirMissatge(parts[0], parts[1], parts[2]);
