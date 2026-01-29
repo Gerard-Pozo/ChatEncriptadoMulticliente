@@ -34,20 +34,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!event.data) return;
 
         const parts = event.data.split(separador);
+        console.log(parts);
 
         if (parts[0] === missatgeClientPropiConnectat) {
-            afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2]);
+            afegirMissatge(missatgeClientPropiConnectat, parts[1], parts[2], parts[3]);
         } else if (parts[0] === missatgeNouClient) {
             afegirMissatge(missatgeNouClient, parts[1], parts[2]);
         } else if (parts[0] === missatgeClientDesconectat) {
             afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
-            afegirMissatge(parts[0], parts[1], parts[2]);
+            afegirMissatge(parts[0], parts[1], parts[2], parts[3]);
         }
     };
 
     // Afegeix missatges al DOM
-    function afegirMissatge(remitent, idRemitent, missatge) {
+    function afegirMissatge(remitent, idRemitent, temps, missatge) {
         const contenidor = document.getElementById('chat-general');
         const nouContenidor = document.createElement('div');
 
@@ -76,17 +77,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById(idRemitent).remove();
         } else if (remitent === missatgeClientPropiConnectat) { // Missatge "Connectat com "
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em>`;
+            nouContenidor.innerHTML = `<em>Connectat com ${missatge}</em><br>`;
             nouContenidor.style.backgroundColor = '#2e7d32';
+            nouContenidor.innerHTML += `<i>${temps}</i>`
 
             id = idRemitent;
 
         } else if (id === idRemitent) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
-            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}`;
+            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}<br>`;
+            nouContenidor.innerHTML += `<i>${temps}</i>`
         } else { // Missatges d'un altre client
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}`;
+            nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}<br>`;
+            nouContenidor.innerHTML += `<i>${temps}</i>`
         }
 
         contenidor.appendChild(nouContenidor);

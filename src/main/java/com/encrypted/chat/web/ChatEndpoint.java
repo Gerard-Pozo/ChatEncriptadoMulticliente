@@ -2,10 +2,12 @@ package com.encrypted.chat.web;
 
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
+import jakarta.ejb.Local;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -104,10 +106,9 @@ public class ChatEndpoint implements UI {
                             parts[parts.length - 1]);
                     for (int i = 0; i < parts.length - 1; i++) {
                         md.setDestinatari(LlistatPersones.getPersona(parts[i]));
-                        System.out.println("Destinatari: " + parts[i]);
-                        System.out.println("Missatge: " + parts[parts.length - 1]);
                         RemitentTCP.enviarMissatge(md);
-                        mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona, parts[parts.length - 1]));
+                        mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona,
+                                parts[parts.length - 1]));
                     }
                     return;
                 } else {
@@ -149,12 +150,17 @@ public class ChatEndpoint implements UI {
             for (Session s : sessions) {
                 if (s != null && s.isOpen()) {
                     String missatgePerPassar = "";
-                    System.out.println("Missatge arribat " + missatge);
+
+                    LocalTime temps = LocalTime.now();
+
+                    int hora = temps.getHour();
+                    int minut = temps.getMinute();
 
                     switch (missatge.getTipus()) {
                         case CONNECTAT:
                             missatgePerPassar = Utils.CLIENT_PROPI_CONNECTAT
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
+                                    + Utils.SEPARADOR + hora + ":" + minut
                                     + Utils.SEPARADOR + missatge.getEmisor().getNom();
                             break;
                         case NOU_CLIENT:
@@ -170,6 +176,7 @@ public class ChatEndpoint implements UI {
                         case MISSATGE:
                             missatgePerPassar = missatge.getEmisor().getNom()
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
+                                    + Utils.SEPARADOR + hora + ":" + minut
                                     + Utils.SEPARADOR + missatge.getMissatge();
                             break;
                         default:
