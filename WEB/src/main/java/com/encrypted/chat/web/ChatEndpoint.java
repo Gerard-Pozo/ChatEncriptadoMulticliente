@@ -2,7 +2,6 @@ package com.encrypted.chat.web;
 
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
-import jakarta.ejb.Local;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
