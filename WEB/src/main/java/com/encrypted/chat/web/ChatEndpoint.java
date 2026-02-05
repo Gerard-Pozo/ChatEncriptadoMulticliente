@@ -39,7 +39,8 @@ import com.encrypted.chat.utils.Utils;
 public class ChatEndpoint implements UI {
 
     /**
-     * Core del programa, permet passar missatges entre les diferents parts del programa
+     * Core del programa, permet passar missatges entre les diferents parts del
+     * programa
      */
     private Core core;
     /**
@@ -111,20 +112,23 @@ public class ChatEndpoint implements UI {
                 // Missatge TCP
                 if (parts.length > 1) {
                     esMissatgeTCP = true;
-                    MissatgeDesencriptat md = new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona,
+                    MissatgeDesencriptat md = new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE,
+                            esMissatgeTCP, persona,
                             parts[parts.length - 1]);
                     for (int i = 0; i < parts.length - 1; i++) {
                         md.setDestinatari(LlistatPersones.getPersona(parts[i]));
                         RemitentTCP.enviarMissatge(md);
-                        mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona,
-                                parts[parts.length - 1]));
                     }
+                    mostrarMissatge(
+                            new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona,
+                                    parts[parts.length - 1]));
                     return;
                 } else {
                     remitentUDP.enviarMissatge(persona, missatge);
                 }
                 // Mostrar el propi missatge que ha enviat el client
-                mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona, missatge));
+                mostrarMissatge(
+                        new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona, missatge));
             }
         } else {
             // Crea al client amb el seu nom real
@@ -151,7 +155,8 @@ public class ChatEndpoint implements UI {
     /**
      * Envia un missatge a totes les sessions i les mostren per la UI
      * 
-     * També s'utilitza per mostrar missatges del sistema com quan un client es connecta o es desconecta
+     * També s'utilitza per mostrar missatges del sistema com quan un client es
+     * connecta o es desconecta
      * 
      * @param mensaje Missatge per mostrar
      */
