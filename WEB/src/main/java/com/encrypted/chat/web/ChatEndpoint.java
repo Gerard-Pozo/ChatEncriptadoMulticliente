@@ -173,8 +173,8 @@ public class ChatEndpoint implements UI {
                         case CONNECTAT:
                             missatgePerPassar = Utils.CLIENT_PROPI_CONNECTAT
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
-                                    + Utils.SEPARADOR + horaFormatada
-                                    + Utils.SEPARADOR + missatge.getEmisor().getNom();
+                                    + Utils.SEPARADOR + missatge.getEmisor().getNom()
+                                    + Utils.SEPARADOR + horaFormatada;
                             break;
                         case NOU_CLIENT:
                             missatgePerPassar = Utils.NOU_CLIENT_TROBAT
