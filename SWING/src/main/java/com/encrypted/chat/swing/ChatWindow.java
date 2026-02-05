@@ -1,5 +1,9 @@
 package com.encrypted.chat.swing;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import javax.swing.DefaultListModel;
 
 import com.encrypted.chat.models.MissatgeDesencriptat;
@@ -82,7 +86,6 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
         listUsuaris = new javax.swing.JList<>();
         lblLlista = new javax.swing.JLabel();
         lblChat = new javax.swing.JLabel();
-        btnSeleccionarUsuari = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 0, 0));
@@ -120,10 +123,6 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
         lblChat.setText("Xat");
         lblChat.setName("Llista d'usuaris"); // NOI18N
 
-        btnSeleccionarUsuari.setBackground(new java.awt.Color(205, 205, 251));
-        btnSeleccionarUsuari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnSeleccionarUsuari.setText("Seleccionar usuari(s)");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,10 +134,7 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
                                                 .addGroup(layout
                                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
                                                                 false)
-                                                        .addComponent(txtLlistaUsuaris)
-                                                        .addComponent(btnSeleccionarUsuari,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, 181,
-                                                                Short.MAX_VALUE)))
+                                                        .addComponent(txtLlistaUsuaris)))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGap(35, 35, 35)
                                                 .addComponent(lblLlista)))
@@ -177,9 +173,7 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(txtLlistaUsuaris, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                        208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(8, 8, 8)
-                                                .addComponent(btnSeleccionarUsuari)))
+                                                        208, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(txtMsg)
@@ -226,7 +220,6 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
-    private javax.swing.JButton btnSeleccionarUsuari;
     private javax.swing.JLabel lblChat;
     private javax.swing.JLabel lblLlista;
     private javax.swing.JList<Persona> listUsuaris;
@@ -237,22 +230,32 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
     // End of variables declaration//GEN-END:variables
 
     public void enviarMissatge() {
-        // Missatge per TCP
-        if (listUsuaris.getModel().getSize() > 0) {
-            MissatgeDesencriptat md = new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE,
+        List<Persona> usuarisSeleccionats = listUsuaris.getSelectedValuesList();
+
+        if (!usuarisSeleccionats.isEmpty()) {
+            for (Persona destinatari : usuarisSeleccionats) {
+                MissatgeDesencriptat md = new MissatgeDesencriptat(
+                        TipusMissatgeDesencriptat.MISSATGE,
+                        true,
+                        persona,
+                        txtMsg.getText());
+                md.setDestinatari(destinatari);
+                RemitentTCP.enviarMissatge(md);
+            }
+
+            mostrarMissatge(new MissatgeDesencriptat(
+                    TipusMissatgeDesencriptat.MISSATGE,
                     true,
                     persona,
-                    txtMsg.getText());
-            for (int i = 0; i < listUsuaris.getModel().getSize(); i++) {
-                md.setDestinatari(listUsuaris.getModel().getElementAt(i));
-                // Envia el missatge al destinatari
-                RemitentTCP.enviarMissatge(md);
-                // Mostra el missatge
-            }
-            mostrarMissatge(
-                    new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, true, persona, txtMsg.getText()));
+                    txtMsg.getText()));
+        } else {
+            remitentUDP.enviarMissatge(persona, txtMsg.getText());
+            mostrarMissatge(new MissatgeDesencriptat(
+                    TipusMissatgeDesencriptat.MISSATGE,
+                    false,
+                    persona,
+                    txtMsg.getText()));
         }
-
         txtMsg.setText("");
     }
 
@@ -269,7 +272,16 @@ public class ChatWindow extends javax.swing.JFrame implements UI {
                 modelUsuaris.removeElement(missatge.getEmisor());
                 break;
             case MISSATGE:
-                txtChat.append("\n" + missatge.getEmisor() + ": " + missatge.getMissatge());
+
+                LocalTime temps = LocalTime.now();
+
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
+
+                // Agafa l'hora actual amb format HH:mm
+                String horaFormatada = temps.format(format);
+
+                txtChat.append("\n" + missatge.getEmisor() + ": " + missatge.getMissatge()
+                    + "\n" + horaFormatada + " | " + (missatge.getEsMissatgeTCP() ? "TCP" : "UDP"));
                 break;
 
             default:
