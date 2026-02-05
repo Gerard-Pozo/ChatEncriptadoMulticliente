@@ -121,7 +121,7 @@ public class ReceptorUDP implements Runnable {
 										missatge.getMissatgeEncriptat(),
 										clauAESSessio);
 								core.passarMissatge(
-										new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE,
+										new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, false,
 												missatge.getEmisor(),
 												missatgeDesencriptat));
 								System.out.println("NOU MISSATGE: " + missatgeDesencriptat);

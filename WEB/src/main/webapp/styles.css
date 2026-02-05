@@ -282,6 +282,28 @@ body {
     background-color: #4752c4;
 }
 
+i {
+    color: rgb(212, 212, 212);
+    font-size: 12px;
+}
+.msg_client {
+    display: block;
+    width: 100%;
+    text-align: right;
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+}
+
+.msg_remitent {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+}
+
 /* ==========================
    MÓVIL: PANEL DESPLEGABLE
 ========================== */

@@ -1,5 +1,10 @@
 package com.encrypted.chat.models;
 
+/**
+ * Classe que representa un missatge desencriptat, és a dir, el missatge que es mostrarà al client.
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class MissatgeDesencriptat {
     /**
      * Per diferenciar els tipus de missatges que pot escoltar el client.
@@ -20,7 +25,20 @@ public class MissatgeDesencriptat {
      * La persona que envia el missatge
      */
     private Persona emisor;
+    /**
+     * La persona que rep el missatge, en cas de ser un missatge TCP, sinó serà null
+     */
     private Persona destinatari;
+    /**
+     * Indica si el missatge és un missatge TCP
+     */
+    private boolean esMissatgeTCP;
+
+    public MissatgeDesencriptat(TipusMissatgeDesencriptat tipus, Persona emisor, String missatge) {
+        this.tipus = tipus;
+        this.missatge = missatge;
+        this.emisor = emisor;
+    }
 
     /**
      * Constructor que permet crear un missatge amb el tipus, el missatge ja
@@ -30,10 +48,12 @@ public class MissatgeDesencriptat {
      * @param missatge Missatge ja encriptat
      * @param emisor   Persona que crea el missatge
      */
-    public MissatgeDesencriptat(TipusMissatgeDesencriptat tipus, Persona emisor, String missatge) {
+    public MissatgeDesencriptat(TipusMissatgeDesencriptat tipus, boolean esMissatgeTCP, Persona emisor,
+            String missatge) {
         this.tipus = tipus;
         this.missatge = missatge;
         this.emisor = emisor;
+        this.esMissatgeTCP = esMissatgeTCP;
     }
 
     /**
@@ -63,11 +83,30 @@ public class MissatgeDesencriptat {
         return emisor;
     }
 
+    /**
+     * Retorna el destinatari del missatge
+     * 
+     * @return Destinatari del missatge
+     */
     public Persona getDestinatari() {
         return destinatari;
     }
 
+    /**
+     * Estableix el destinatari del missatge
+     * 
+     * @param p Destinatari del missatge
+     */
     public void setDestinatari(Persona p) {
         destinatari = p;
+    }
+
+    /**
+     * Retorna si el missatge és un missatge TCP.
+     * 
+     * @return True si el missatge és un missatge TCP, False en cas contrari
+     */
+    public boolean getEsMissatgeTCP() {
+        return esMissatgeTCP;
     }
 }

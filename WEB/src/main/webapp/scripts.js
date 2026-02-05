@@ -43,18 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (parts[0] === missatgeClientDesconectat) {
             afegirMissatge(missatgeClientDesconectat, parts[1], parts[2]);
         } else {
-            afegirMissatge(parts[0], parts[1], parts[2], parts[3]);
+            afegirMissatge(parts[0], parts[1], parts[2], parts[3], parts[4]);
         }
     };
 
     // Afegeix missatges al DOM
-    function afegirMissatge(remitent, idRemitent, temps, missatge) {
+    function afegirMissatge(remitent, idRemitent, missatge, temps, esMissatgeTCP) {
         const contenidor = document.getElementById('chat-general');
         const nouContenidor = document.createElement('div');
 
         // Diferencia entre missatges enviats per el client o per un altre
         if (remitent === missatgeNouClient) { // Missatge per detectar a nous clients connectats
-            console.log("JS: Nuevo cliente " + missatge);
             const contenidorClients = document.getElementById('llista-usuaris');
             const nouLabel = document.createElement('label');
             const nouInput = document.createElement('input');
@@ -85,12 +84,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } else if (id === idRemitent) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
-            nouContenidor.innerHTML = `<strong>Tú:</strong><br> ${missatge}<br>`;
-            nouContenidor.innerHTML += `<i>${temps}</i>`
+
+            console.log("M Cliente:", esMissatgeTCP, esMissatgeTCP === "true");
+
+            nouContenidor.innerHTML = `<strong>Tú: ${esMissatgeTCP === "true" ? "TCP" : "UDP"}</strong><br> ${missatge}<br>`;
+            nouContenidor.innerHTML += `<i class="msg_client">${temps}</i>`
         } else { // Missatges d'un altre client
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<strong>${remitent}:</strong><br> ${missatge}<br>`;
-            nouContenidor.innerHTML += `<i>${temps}</i>`
+
+            console.log("M otro:", esMissatgeTCP, esMissatgeTCP === "true");
+
+            nouContenidor.innerHTML = `<strong>${remitent}: ${esMissatgeTCP === "true" ? "TCP" : "UDP"}</strong><br> ${missatge}<br>`;
+            nouContenidor.innerHTML += `<i class="msg_remitent">${temps}</i>`
         }
 
         contenidor.appendChild(nouContenidor);
