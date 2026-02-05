@@ -84,11 +84,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } else if (id === idRemitent) { // Missatges del client
             nouContenidor.classList.add('message', 'sent');
-            nouContenidor.innerHTML = `<strong>Tú: ${esMissatgeTCP === true ? "TCP" : "UDP"}</strong><br> ${missatge}<br>`;
+
+            console.log("M Cliente:", esMissatgeTCP, esMissatgeTCP === "true");
+
+            nouContenidor.innerHTML = `<strong>Tú: ${esMissatgeTCP === "true" ? "TCP" : "UDP"}</strong><br> ${missatge}<br>`;
             nouContenidor.innerHTML += `<i class="msg_client">${temps}</i>`
         } else { // Missatges d'un altre client
             nouContenidor.classList.add('message', 'received');
-            nouContenidor.innerHTML = `<strong>${remitent}: ${esMissatgeTCP === true ? "TCP" : "UDP"}</strong><br> ${missatge}<br>`;
+
+            console.log("M otro:", esMissatgeTCP, esMissatgeTCP === "true");
+
+            nouContenidor.innerHTML = `<strong>${remitent}: ${esMissatgeTCP === "true" ? "TCP" : "UDP"}</strong><br> ${missatge}<br>`;
             nouContenidor.innerHTML += `<i class="msg_remitent">${temps}</i>`
         }
 
