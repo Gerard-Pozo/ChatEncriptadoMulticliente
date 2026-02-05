@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Afegeix missatges al DOM
-    function afegirMissatge(remitent, idRemitent, temps, missatge, esMissatgeTCP) {
+    function afegirMissatge(remitent, idRemitent, missatge, temps, esMissatgeTCP) {
         const contenidor = document.getElementById('chat-general');
         const nouContenidor = document.createElement('div');
 
