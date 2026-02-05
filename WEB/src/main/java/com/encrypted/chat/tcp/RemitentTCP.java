@@ -36,14 +36,12 @@ public class RemitentTCP {
      * @param missatge Missatge desencriptat que es vol enviar
      */
     public static void enviarMissatge(MissatgeDesencriptat missatge) {
-        System.out.println("Enviando mensaje...");
         Socket socket = new Socket();
         Persona p = missatge.getDestinatari();
         try {
             // S'intenta connectar a un client, si en 1 segon no dona resposta tanca
             socket.connect(new InetSocketAddress(p.getIpv4(), Utils.PORT_TCP), 1000);
             // Es genera una clau AES que s'utilitzará per encriptar el text
-            System.out.println("El mensaje se envia a " + p.getIpv4());
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(128);
             SecretKey clauSessio = keyGen.generateKey();
@@ -73,8 +71,6 @@ public class RemitentTCP {
 
             sortida.writeObject(missatgeEncriptat);
             sortida.flush();
-
-            System.out.println("Mensaje enviado " + missatgeEncriptat);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

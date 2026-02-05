@@ -73,7 +73,6 @@ public class ReceptorTCP implements Runnable {
                             clauAESSessio);
                     core.passarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, true,
                             missatge.getEmisor(), missatgeDesencriptat));
-                    System.out.println("Missatge arribat: " + missatgeDesencriptat);
                 }
             }
         } catch (Exception e) {

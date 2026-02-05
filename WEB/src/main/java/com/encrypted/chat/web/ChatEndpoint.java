@@ -98,8 +98,6 @@ public class ChatEndpoint implements UI {
      */
     @OnMessage
     public void handlerMessage(String missatge) {
-        System.out.println("Missatge rebut via WebSocket: " + missatge);
-
         // Descarta entre missatges del client i del sistema
         if (!missatge.startsWith(Utils.MISSATGE_SISTEMA_NOM)) {
             if (persona != null) {
@@ -133,7 +131,6 @@ public class ChatEndpoint implements UI {
         } else {
             // Crea al client amb el seu nom real
             persona = new Persona(missatge.substring(Utils.MISSATGE_SISTEMA_NOM.length(), missatge.length()));
-            System.out.println("Usuari nou: " + persona.getNom());
 
             core = new Core(this);
             receptorUDP = new ReceptorUDP(core, persona);
