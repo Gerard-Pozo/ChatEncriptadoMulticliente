@@ -30,10 +30,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txtLlistaUsuaris" max="32767" attributes="0"/>
-                          <Component id="btnSeleccionarUsuari" pref="181" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="txtLlistaUsuaris" min="-2" pref="181" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
@@ -73,11 +70,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="txtScrollChat" min="-2" pref="274" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="txtLlistaUsuaris" min="-2" pref="208" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      <Component id="btnSeleccionarUsuari" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="txtLlistaUsuaris" min="-2" pref="208" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -165,17 +158,6 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Xat"/>
         <Property name="name" type="java.lang.String" value="Llista d&apos;usuaris" noResource="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnSeleccionarUsuari">
-      <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="fb" green="cd" red="cd" type="rgb"/>
-        </Property>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Segoe UI" size="12" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Seleccionar usuari(s)"/>
       </Properties>
     </Component>
   </SubComponents>

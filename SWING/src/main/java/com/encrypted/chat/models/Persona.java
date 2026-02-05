@@ -116,8 +116,6 @@ public class Persona implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "id: " + id
-				+ "\nnom: " + nom
-				+ "\nclau publica: " + publica.toString();
+		return nom;
 	}
 }

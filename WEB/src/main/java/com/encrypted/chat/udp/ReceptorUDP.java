@@ -105,7 +105,6 @@ public class ReceptorUDP implements Runnable {
 				// Impedeix que un missatge que ha enviar l'usuari sigui processat per ell
 				// mateix
 				if (!missatge.getEmisor().getPublica().equals(persona.getPublica())) {
-					System.out.println("HA LLEGADO UN MENSAJE");
 					// Si el missatge es normal
 					if (missatge.getTipus() == TipusMissatge.ENVIAMENT) {
 						for (String id : missatge.getDestinataris().keySet()) {
@@ -124,7 +123,6 @@ public class ReceptorUDP implements Runnable {
 										new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, false,
 												missatge.getEmisor(),
 												missatgeDesencriptat));
-								System.out.println("NOU MISSATGE: " + missatgeDesencriptat);
 							}
 						}
 						// Si el missatge és per trobar nou clients
@@ -134,14 +132,11 @@ public class ReceptorUDP implements Runnable {
 							core.passarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.NOU_CLIENT,
 									missatge.getEmisor(),
 									null));
-							System.out.println("MISSATGE DESCOBRIMENT");
-
 						}
 						// Si el missatge és per trobar a clients connectats
 					} else if (missatge.getTipus() == TipusMissatge.VIU) {
 						String id = missatge.getEmisor().getId();
 						ultimesMostresDeVida.put(id, System.currentTimeMillis());
-						System.out.println("MISSATGE VIDA");
 					}
 				}
 			} catch (IOException | ClassNotFoundException e) {
