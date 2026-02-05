@@ -14,22 +14,45 @@ import com.encrypted.chat.security.DiffieHellman;
 import com.encrypted.chat.utils.Core;
 import com.encrypted.chat.utils.Utils;
 
+/**
+ * Classe per rebre els missatges enviats per altres clients per TCP.
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class ReceptorTCP implements Runnable {
 
+    /**
+     * Core del programa, permet passar missatges entre les diferents parts del programa
+     */
     private Core core;
 
+    /**
+     * El client que executa l'aplicació
+     */
     private Persona persona;
 
+    /**
+     * Constructor, demana un core i el client que executa l'aplicació
+     * 
+     * @param core Core, per passar missatges al front
+     * @param persona Client que executa l'aplicació
+     */
     public ReceptorTCP(Core core, Persona persona) {
         this.core = core;
         this.persona = persona;
     }
 
+    /**
+     * Inicia un fil que es quedará a l'escolta de connexions.
+     */
     @Override
     public void run() {
         new Thread(() -> tcpEscoltant()).start();
     }
 
+    /**
+     * Es queda escoltant per missatges que arriben per TCP, quan arriba un missatge el desencripta i el passa al core perquè el mostri al front.
+    */
     public void tcpEscoltant() {
         try (ServerSocket servidor = new ServerSocket(Utils.PORT_TCP)) {
             while (true) {
@@ -48,7 +71,7 @@ public class ReceptorTCP implements Runnable {
                     // Després desencriptem el missatge amb la clau AES
                     String missatgeDesencriptat = DiffieHellman.desencriptarMissatge(missatge.getMissatgeEncriptat(),
                             clauAESSessio);
-                    core.passarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE,
+                    core.passarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, true,
                             missatge.getEmisor(), missatgeDesencriptat));
                     System.out.println("Missatge arribat: " + missatgeDesencriptat);
                 }

@@ -1,7 +1,5 @@
 package com.encrypted.chat.swing;
 
-import java.time.LocalTime;
-
 import javax.swing.DefaultListModel;
 
 import com.encrypted.chat.models.MissatgeDesencriptat;
@@ -220,11 +218,6 @@ public class ChatWindow extends javax.swing.JFrame implements UI{
 
     @Override
     public void mostrarMissatge(MissatgeDesencriptat missatge) {
-        LocalTime temps = LocalTime.now();
-
-        int hora = temps.getHour();
-        int minut = temps.getMinute();
-
         switch (missatge.getTipus()) {
             case CONNECTAT:
                 txtChat.append(missatge.getMissatge());

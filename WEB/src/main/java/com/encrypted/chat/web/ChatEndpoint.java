@@ -7,6 +7,7 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,11 +38,17 @@ import com.encrypted.chat.utils.Utils;
 @ServerEndpoint("/chat")
 public class ChatEndpoint implements UI {
 
+    /**
+     * Core del programa, permet passar missatges entre les diferents parts del programa
+     */
     private Core core;
     /**
      * El client
      */
     private Persona persona;
+    /**
+     * Classe per rebre els missatges per TCP
+     */
     private ReceptorTCP receptorTCP;
     /**
      * Classe per enviar els missatges
@@ -99,14 +106,17 @@ public class ChatEndpoint implements UI {
 
                 String[] parts = missatge.split(Pattern.quote(Utils.SEPARADOR));
 
+                boolean esMissatgeTCP = false;
+
                 // Missatge TCP
                 if (parts.length > 1) {
-                    MissatgeDesencriptat md = new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona,
+                    esMissatgeTCP = true;
+                    MissatgeDesencriptat md = new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona,
                             parts[parts.length - 1]);
                     for (int i = 0; i < parts.length - 1; i++) {
                         md.setDestinatari(LlistatPersones.getPersona(parts[i]));
                         RemitentTCP.enviarMissatge(md);
-                        mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona,
+                        mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona,
                                 parts[parts.length - 1]));
                     }
                     return;
@@ -114,7 +124,7 @@ public class ChatEndpoint implements UI {
                     remitentUDP.enviarMissatge(persona, missatge);
                 }
                 // Mostrar el propi missatge que ha enviat el client
-                mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, persona, missatge));
+                mostrarMissatge(new MissatgeDesencriptat(TipusMissatgeDesencriptat.MISSATGE, esMissatgeTCP, persona, missatge));
             }
         } else {
             // Crea al client amb el seu nom real
@@ -141,6 +151,8 @@ public class ChatEndpoint implements UI {
     /**
      * Envia un missatge a totes les sessions i les mostren per la UI
      * 
+     * També s'utilitza per mostrar missatges del sistema com quan un client es connecta o es desconecta
+     * 
      * @param mensaje Missatge per mostrar
      */
     @Override
@@ -152,14 +164,16 @@ public class ChatEndpoint implements UI {
 
                     LocalTime temps = LocalTime.now();
 
-                    int hora = temps.getHour();
-                    int minut = temps.getMinute();
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
+
+                    // Agafa l'hora actual amb format HH:mm
+                    String horaFormatada = temps.format(format);
 
                     switch (missatge.getTipus()) {
                         case CONNECTAT:
                             missatgePerPassar = Utils.CLIENT_PROPI_CONNECTAT
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
-                                    + Utils.SEPARADOR + hora + ":" + minut
+                                    + Utils.SEPARADOR + horaFormatada
                                     + Utils.SEPARADOR + missatge.getEmisor().getNom();
                             break;
                         case NOU_CLIENT:
@@ -175,8 +189,9 @@ public class ChatEndpoint implements UI {
                         case MISSATGE:
                             missatgePerPassar = missatge.getEmisor().getNom()
                                     + Utils.SEPARADOR + missatge.getEmisor().getId()
-                                    + Utils.SEPARADOR + hora + ":" + minut
-                                    + Utils.SEPARADOR + missatge.getMissatge();
+                                    + Utils.SEPARADOR + horaFormatada
+                                    + Utils.SEPARADOR + missatge.getMissatge()
+                                    + Utils.SEPARADOR + missatge.getEsMissatgeTCP();
                             break;
                         default:
                             break;

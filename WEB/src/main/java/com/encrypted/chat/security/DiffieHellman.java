@@ -126,10 +126,10 @@ public class DiffieHellman {
 	public static SecretKey desencriptarClauAES(String clauEncriptada, PrivateKey clauPrivada,
 			PublicKey clauPublicaEmisor) {
 		try {
-			// 1. Generar la clau DH compartida
+			// Generar la clau DH compartida
 			SecretKey clauDH = generarClauCompartidaAES(clauPrivada, clauPublicaEmisor);
 
-			// 2. Desencriptar la clau AES de sessió
+			// Desencriptar la clau AES de sessió
 			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			cipher.init(Cipher.DECRYPT_MODE, clauDH);
 			byte[] clauAESBytes = cipher.doFinal(Base64.getDecoder().decode(clauEncriptada));

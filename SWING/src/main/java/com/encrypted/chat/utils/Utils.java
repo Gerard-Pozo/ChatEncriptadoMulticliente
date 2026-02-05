@@ -9,6 +9,14 @@ import java.security.NoSuchAlgorithmException;
 import com.encrypted.chat.models.LlistatPersones;
 import com.encrypted.chat.models.Persona;
 
+/**
+ * Aquesta classe conté mètodes utilitaris que són utilitzats per diferents
+ * parts del programa, com per exemple per obtenir la ip local o per convertir
+ * un String en hash, a part de totes les constants globals que s'utiltizan en
+ * tot el programa.
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class Utils {
 
 	/**
@@ -94,37 +102,38 @@ public class Utils {
 	}
 
 	/**
-	 * Recorreix les interficies de xarxa buscant la ip que té l'equip
+	 * Recorreix les interficies de xarxa buscant la ip que té l'equip i només es
+	 * queda amb una ipv4 que sigui de classe B o C, si no en troba cap retorna null
 	 * 
 	 * @return IP del equip
 	 */
 	public static String obtenirIpLocal() {
-    try {
-        for (NetworkInterface ni : java.util.Collections.list(
-                NetworkInterface.getNetworkInterfaces())) {
+		try {
+			for (NetworkInterface ni : java.util.Collections.list(
+					NetworkInterface.getNetworkInterfaces())) {
 
-            for (InetAddress addr : java.util.Collections.list(
-                    ni.getInetAddresses())) {
+				for (InetAddress addr : java.util.Collections.list(
+						ni.getInetAddresses())) {
 
-                if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
+					if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
 
-                    String ip = addr.getHostAddress();
-                    int primerOcteto = Integer.parseInt(ip.split("\\.")[0]);
+						String ip = addr.getHostAddress();
+						int primerOcteto = Integer.parseInt(ip.split("\\.")[0]);
 
-                    // Solo clase B o C
-                    if ((primerOcteto >= 128 && primerOcteto <= 191) ||
-                        (primerOcteto >= 192 && primerOcteto <= 223)) {
+						// Solo clase B o C
+						if ((primerOcteto >= 128 && primerOcteto <= 191) ||
+								(primerOcteto >= 192 && primerOcteto <= 223)) {
 
-                        return ip;
-                    }
-                }
-            }
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+							return ip;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    return null;
-}
+		return null;
+	}
 
 }

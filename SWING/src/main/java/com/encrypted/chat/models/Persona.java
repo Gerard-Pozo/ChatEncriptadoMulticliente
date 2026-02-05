@@ -1,8 +1,6 @@
 package com.encrypted.chat.models;
 
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -46,6 +44,9 @@ public class Persona implements Serializable {
 	 * Clau privada
 	 */
 	private transient PrivateKey privada;
+	/**
+	 * IPV4 del client
+	 */
 	private String ipv4;
 
 	/**
@@ -115,6 +116,8 @@ public class Persona implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return nom;
+		return "id: " + id
+				+ "\nnom: " + nom
+				+ "\nclau publica: " + publica.toString();
 	}
 }

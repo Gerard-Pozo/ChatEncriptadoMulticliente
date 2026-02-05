@@ -23,8 +23,18 @@ import com.encrypted.chat.models.Persona;
 import com.encrypted.chat.security.DiffieHellman;
 import com.encrypted.chat.utils.Utils;
 
+/**
+ * Classe per enviar els missatges a encriptats per TCP a altres clients.
+ * 
+ * @author Gerard Pozo i Ivan Rodriguez
+ */
 public class RemitentTCP {
 
+    /**
+     * Permet enviar un missatge a un client, el missatge ha d'estar encriptat i s'enviarà per TCP.
+     * 
+     * @param missatge Missatge desencriptat que es vol enviar
+     */
     public static void enviarMissatge(MissatgeDesencriptat missatge) {
         System.out.println("Enviando mensaje...");
         Socket socket = new Socket();
