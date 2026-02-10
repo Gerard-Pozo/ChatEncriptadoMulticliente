@@ -25,7 +25,7 @@ import com.encrypted.chat.utils.UI;
 
 /**
  *
- * @author Ivan
+ * @author Gerard Pozo i Ivan Rodriguez
  */
 public class ChatWindow extends javax.swing.JFrame implements UI {
 

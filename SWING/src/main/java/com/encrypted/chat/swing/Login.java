@@ -10,13 +10,13 @@ import com.encrypted.chat.models.Persona;
 public class Login extends JFrame {
 
     public Login() {
-        setTitle("Datos del cliente");
+        setTitle("Dades d'usuari");
         setSize(300, 150);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTextField txtNombre = new JTextField(15);
-        JButton btnAceptar = new JButton("Aceptar");
+        JButton btnAceptar = new JButton("Acceptar");
 
         btnAceptar.addActionListener(e -> {
             String nombre = txtNombre.getText();
@@ -28,7 +28,7 @@ public class Login extends JFrame {
         });
 
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Nombre:"));
+        panel.add(new JLabel("Nom:"));
         panel.add(txtNombre);
         panel.add(btnAceptar);
 
